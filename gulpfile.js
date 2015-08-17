@@ -1,13 +1,18 @@
 var gulp = require('gulp'),
-    plugins = require('gulp-load-plugins')();
-    browserSync = require('browser-sync').create();
+    plugins = require('gulp-load-plugins')(),
+    browserSync = require('browser-sync').create(),
+    nib = require('nib');
+
 
 var source = {
+  assets: 'app/assets/**/*',
   indexTemplate: 'app/index.hbs',
   templates: 'app/templates/**/*.hbs',
   typescripts: 'app/scripts/**/*.ts',
   jsscripts: 'app/scripts/**/*.js',
-  styles: 'app/styles/**/*.styl'
+  jsxscripts: 'app/scripts/**/*.jsx',
+  coffeescripts: 'app/scripts/**/*.coffee',
+  styles: 'app/styles/*.styl'
 }
 
  var dest = [
@@ -15,6 +20,11 @@ var source = {
     'public/styles/**/*.css',
     'public/scripts/**/*.js',
     'public/templates/**/*/js'
+ ];
+
+ var bower_components = [
+    'bower_components/react/react.js',
+    'bower_components/react/JSXTransformer.js'
  ];
 
 gulp.task('browserSync', function () {
@@ -44,32 +54,55 @@ gulp.task('indexTemplate', function() {
     .pipe(gulp.dest('public'))
 });
 
+gulp.task('bower', function() {
+  gulp.src(bower_components)
+    .pipe(plugins.concat('bower.js'))
+    .pipe(gulp.dest('public/scripts/'))
+});
+
 gulp.task('scripts', function() {
+
+  gulp.src(source.jsscripts)
+    .pipe(plugins.concat('javascript.js'))
+    .pipe(gulp.dest('public/scripts/'))
+
   gulp.src(source.typescripts)
     .pipe(plugins.typescript({
       noImplicitAny: true,
-      out: 'main.js'
+      out: 'typescript.js'
     }))
     .pipe(gulp.dest('public/scripts/'))
 
-  gulp.src(source.jsscripts)
-    .pipe(plugins.concat('reactTests.js'))
+  gulp.src(source.coffeescripts)
+    .pipe(plugins.coffee({bare:true}))
+    .pipe(plugins.concat('coffee.js'))
+    .pipe(gulp.dest('public/scripts/'))
+
+  gulp.src(source.jsxscripts)
+    .pipe(plugins.react())
+    .pipe(plugins.concat('jsx.js'))
     .pipe(gulp.dest('public/scripts/'))
 
 });
 
 gulp.task('styles', function() {
   gulp.src(source.styles)
-    .pipe(plugins.stylus())
+    .pipe(plugins.stylus({use: nib()}))
     .pipe(plugins.sourcemaps.write())
     .pipe(gulp.dest('public/styles/'))
 });
 
+gulp.task('assets', function() {
+  gulp.src(source.assets)
+    .pipe(plugins.copy('public/', {prefix:2}))
+});
+
 gulp.task('watch', function() {
-  gulp.watch(source.scripts, ['scripts']);
+  gulp.watch([source.typescripts, source.jsscripts, source.jsxscripts, source.coffeescripts], ['scripts']);
+  gulp.watch(source.styles, ['styles']);
   gulp.watch(source.templates, ['templates']);
   gulp.watch(source.indexTemplate, ['indexTemplate']);
 });
 
-gulp.task('build', ['indexTemplate', 'templates', 'scripts', 'styles'], browserSync.reload);
+gulp.task('build', ['indexTemplate', 'templates', 'bower', 'scripts', 'styles', 'assets'], browserSync.reload);
 gulp.task('server', ['browserSync','build','watch']);
