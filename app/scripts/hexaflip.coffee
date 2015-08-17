@@ -23,7 +23,7 @@ defaults =
   margin: 10
   fontSize: 132
   perspective: 1000
-  touchSensitivity: 1
+  touchSensitivity: 0.85
 
 cssClass = baseName.toLowerCase()
 faceNames = ['front', 'bottom', 'back', 'top', 'left', 'right']
@@ -182,14 +182,17 @@ class window.HexaFlip
     e.currentTarget.classList.add 'no-tween'
     if e.type is 'mousedown'
       cube.y1 = e.pageY
+      # cube.y1 = e.pageX
     else
       cube.y1 = e.touches[0].pageY
+      # cube.y1 = e.touches[0].pageX
 
 
   _onTouchMove: (e, cube) ->
     return unless cube.touchStarted
     e.preventDefault()
     cube.diff = (e.pageY - cube.y1) * @touchSensitivity
+    # cube.diff = (e.pageX - cube.y1) * @touchSensitivity
     cube.yDelta = cube.yLast - cube.diff
     @_setSides cube
 

@@ -22,7 +22,7 @@ var Flip = React.createClass({
             './images/6.jpg'
         ];
 
-    new HexaFlip(document.getElementById('hexaflip-demo4'), {set: images},{size: 500});
+    new HexaFlip(document.getElementById('hexaflip-demo4'), {set: images},{size: 300});
 
     // document.getElementById('prev').addEventListener('click', function(){
     //     hexaDemo4.flipBack();

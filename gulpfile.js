@@ -99,7 +99,7 @@ gulp.task('assets', function() {
 
 gulp.task('watch', function() {
   gulp.watch([source.typescripts, source.jsscripts, source.jsxscripts, source.coffeescripts], ['scripts']);
-  gulp.watch(source.styles, ['styles']);
+  gulp.watch('app/styles/**/*.styl', ['styles']);
   gulp.watch(source.templates, ['templates']);
   gulp.watch(source.indexTemplate, ['indexTemplate']);
 });
