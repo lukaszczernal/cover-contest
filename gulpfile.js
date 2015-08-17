@@ -3,10 +3,11 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync').create();
 
 var source = {
-  indexTemplate: ['app/index.hbs'],
-  templates: ['app/templates/**/*.hbs'],
-  scripts: ['app/scripts/**/*.ts'],
-  styles: ['app/styles/**/*.styl']
+  indexTemplate: 'app/index.hbs',
+  templates: 'app/templates/**/*.hbs',
+  typescripts: 'app/scripts/**/*.ts',
+  jsscripts: 'app/scripts/**/*.js',
+  styles: 'app/styles/**/*.styl'
 }
 
  var dest = [
@@ -44,12 +45,17 @@ gulp.task('indexTemplate', function() {
 });
 
 gulp.task('scripts', function() {
-  gulp.src(source.scripts)
+  gulp.src(source.typescripts)
     .pipe(plugins.typescript({
       noImplicitAny: true,
       out: 'main.js'
     }))
     .pipe(gulp.dest('public/scripts/'))
+
+  gulp.src(source.jsscripts)
+    .pipe(plugins.concat('reactTests.js'))
+    .pipe(gulp.dest('public/scripts/'))
+
 });
 
 gulp.task('styles', function() {
