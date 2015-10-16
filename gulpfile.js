@@ -23,8 +23,12 @@ var source = {
  ];
 
  var bower_components = [
+    'bower_components/jquery/dist/jquery.js',
+    'bower_components/hammerjs/hammer.js',
     'bower_components/react/react.js',
-    'bower_components/react/JSXTransformer.js'
+    'bower_components/react/JSXTransformer.js',
+    'bower_components/handlebars/handlebars.runtime.js',
+    'bower_components/inobounce/inobounce.js'
  ];
 
 gulp.task('browserSync', function () {
@@ -38,7 +42,7 @@ gulp.task('browserSync', function () {
 gulp.task('templates', function() {
   gulp.src(source.templates)
     .pipe(plugins.handlebars())
-    .pipe(plugins.wrap('Handlebars.templates(<%= contents %>)'))
+    .pipe(plugins.wrap('Handlebars.template(<%= contents %>)'))
     .pipe(plugins.declare({
       namespace: 'CC.templates',
       noRedeclare: true

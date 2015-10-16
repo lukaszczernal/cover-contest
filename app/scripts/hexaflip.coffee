@@ -19,14 +19,17 @@ css = {}
 css[prop.toLowerCase()] = prefixProp prop for prop in ['Transform', 'Perspective']
 
 defaults =
+  # size440
   size: 200
   margin: 10
+  # fontSize440
   fontSize: 132
   perspective: 1000
-  touchSensitivity: 0.85
+  touchSensitivity: 0.45
 
 cssClass = baseName.toLowerCase()
-faceNames = ['front', 'bottom', 'back', 'top', 'left', 'right']
+# faceNames = ['front', 'bottom', 'back', 'top', 'left', 'right']
+faceNames = ['front', 'left', 'back', 'right', 'top', 'bottom']
 faceSequence = faceNames.slice 0, 4
 urlRx = /^((((https?)|(file)):)?\/\/)|(data:)|(\.\.?\/)/i
 
@@ -35,6 +38,7 @@ class window.HexaFlip
   constructor: (@el, @sets, @options = {}) ->
     return unless css.transform and @el
     @[option] = @options[option] ? defaults[option] for option, value of defaults
+    # @fontSize += 'px' if typeof @fontSize is 'number'
     @fontSize += 'px' if typeof @fontSize is 'number'
 
     unless @sets
@@ -68,7 +72,7 @@ class window.HexaFlip
     @cubes[setsKeys[setsKeys.length - 1]].el.style.marginRight = '0'
 
     @el.classList.add cssClass
-    @el.style.height = @size + 'px'
+    @el.style.height = @size * 1.46 + 'px'
     @el.style.width = ((@size + @margin * 2) * setsLength) - @margin * 2 + 'px'
     @el.style[css.perspective] = @perspective + 'px'
     @el.appendChild cubeFragment
@@ -78,15 +82,20 @@ class window.HexaFlip
     cube =
       set: set
       offset: 0
-      y1: 0
+      y: 0
       yDelta: 0
       yLast: 0
+      x1: 0
+      xDelta: 0
+      xLast: 0
       el: document.createElement 'div'
 
     cube.el.className = "#{ cssClass }-cube #{ cssClass }-cube-#{ set }"
     cube.el.style.margin = "0 #{ @margin }px"
-    cube.el.style.width = cube.el.style.height = @size + 'px'
-    cube.el.style[css.transform] = @_getTransform 0
+    # cube.el.style.width = cube.el.style.height = @size + 'px'
+    cube.el.style.width = @size + 'px'
+    cube.el.style.height = @size * 1.46 + 'px'
+    cube.el.style[css.transform] = @_getTransform 0, 0
 
     for side in faceNames
       cube[side] = document.createElement 'div'
@@ -94,9 +103,9 @@ class window.HexaFlip
       rotate3d = do ->
         switch side
           when 'front'
-            '0, 0, 0, 0deg'
+            '1, 0, 0, 0deg'
           when 'back'
-            '1, 0, 0, 180deg'
+            '0, 1, 0, 180deg'
           when 'top'
             '1, 0, 0, 90deg'
           when 'bottom'
@@ -105,6 +114,10 @@ class window.HexaFlip
             '0, 1, 0, -90deg'
           when 'right'
             '0, 1, 0, 90deg'
+
+      if side in ['top', 'bottom']
+        cube[side].style['width'] = "#{@size}px"
+        cube[side].style['height'] = "#{@size}px"
 
       cube[side].style[css.transform] = "rotate3d(#{ rotate3d }) translate3d(0, 0, #{ @size / 2 }px)"
       cube[side].style.fontSize = @fontSize
@@ -125,8 +138,10 @@ class window.HexaFlip
     cube
 
 
-  _getTransform: (deg) ->
-    "translateZ(-#{ @size / 2 }px) rotateX(#{ deg }deg)"
+  _getTransform: (degY, degX) ->
+    # "translateZ(-#{ @size / 2 }px) rotateX(#{ degY }deg)"
+    # "translateZ(-#{ (@size * 1.46) / 2 }px) rotateX(#{degY}deg) rotateY(#{-degX}deg)"
+    "translateZ(-#{ (@size * 1.46) / 2 }px) rotateY(#{-degX}deg)"
 
 
   _setContent: (el, content) ->
@@ -145,8 +160,9 @@ class window.HexaFlip
 
 
   _setSides: (cube) ->
-    cube.el.style[css.transform] = @_getTransform cube.yDelta
-    cube.offset = offset = Math.floor cube.yDelta / 90
+    cube.el.style[css.transform] = @_getTransform cube.yDelta, cube.xDelta
+    # cube.offset = offset = Math.floor cube.yDelta / 90
+    cube.offset = offset = Math.floor cube.xDelta / 90
     return if offset is cube.lastOffset
     cube.lastOffset = faceOffset = setOffset = offset
     set = @sets[cube.set]
@@ -181,24 +197,27 @@ class window.HexaFlip
     cube.touchStarted = true
     e.currentTarget.classList.add 'no-tween'
     if e.type is 'mousedown'
-      cube.y1 = e.pageY
-      # cube.y1 = e.pageX
+      cube.y = e.pageY
+      cube.x = e.pageX
     else
-      cube.y1 = e.touches[0].pageY
-      # cube.y1 = e.touches[0].pageX
+      cube.y = e.touches[0].pageY
+      cube.x = e.touches[0].pageX
 
 
   _onTouchMove: (e, cube) ->
     return unless cube.touchStarted
     e.preventDefault()
-    cube.diff = (e.pageY - cube.y1) * @touchSensitivity
-    # cube.diff = (e.pageX - cube.y1) * @touchSensitivity
-    cube.yDelta = cube.yLast - cube.diff
+    cube.yDiff = (e.pageY - cube.y) * @touchSensitivity
+    cube.xDiff = (e.pageX - cube.x) * @touchSensitivity
+    cube.yDelta = cube.yLast - cube.yDiff
+    cube.xDelta = cube.xLast - cube.xDiff
     @_setSides cube
 
 
   _onTouchEnd: (e, cube) ->
     cube.touchStarted = false
+
+    # vertical movement
     mod = cube.yDelta % 90
     if mod < 45
       cube.yLast = cube.yDelta + mod
@@ -211,8 +230,21 @@ class window.HexaFlip
     if cube.yLast % 90 isnt 0
       cube.yLast -= cube.yLast % 90
 
+    # horiontal movement
+    mod = cube.xDelta % 90
+    if mod < 45
+      cube.xLast = cube.xDelta + mod
+    else
+      if cube.xDelta > 0
+        cube.xLast = cube.xDelta + mod
+      else
+        cube.xLast = cube.xDelta - (90 - mod)
+
+    if cube.xLast % 90 isnt 0
+      cube.xLast -= cube.xLast % 90
+
     cube.el.classList.remove 'no-tween'
-    cube.el.style[css.transform] = @_getTransform cube.yLast
+    cube.el.style[css.transform] = @_getTransform cube.yLast, cube.xLast
 
 
   _onTouchLeave: (e, cube) ->
