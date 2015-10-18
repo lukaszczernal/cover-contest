@@ -4,6 +4,7 @@
 module Swiper {
 
   export class Card {
+      elem: JQuery;
       hammer: HammerManager;
       newTranslateX: number;
       translateX: number;
@@ -67,14 +68,14 @@ module Swiper {
           this.registerEvents();
       };
 
-      constructor(public elem: JQuery) {
-          if (elem[0].width > 0 && elem[0].height > 0) {
-              this.init()
-          } else {
-              elem.load(() => {
-                  this.init()
-              })
-          }
+      constructor(public source:DecksCardResponse) {
+          // if (elem[0].width > 0 && elem[0].height > 0) {
+          //     this.init()
+          // } else {
+          //     elem.load(() => {
+          //         this.init()
+          //     })
+          // }
       };
   };
 }
