@@ -10,7 +10,9 @@ module Swiper {
         templateName: string;
 
         render(data: any) {
-            return CC.templates[this.templateName]();
+            var elem:string = CC.templates[this.templateName]();
+            elem = $(elem);
+            return elem;
         }
 
         constructor() {
@@ -20,6 +22,14 @@ module Swiper {
 
     export class DeckView extends View {
         templateName = 'deck';
+
+        constructor() {
+            super()
+        }
+    }
+
+    export class CardView extends View {
+        templateName = 'card';
 
         constructor() {
             super()

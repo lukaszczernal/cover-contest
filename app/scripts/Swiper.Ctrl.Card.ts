@@ -1,10 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Models.ts" />
+/// <reference path="./Swiper.View.ts" />
+
 "use strict"
 
 module Swiper {
-
-  export class Card {
+     export class Card {
       elem: JQuery;
+      template: Swiper.View;
       hammer: HammerManager;
       newTranslateX: number;
       translateX: number;
@@ -68,7 +71,11 @@ module Swiper {
           this.registerEvents();
       };
 
-      constructor(public source:DecksCardResponse) {
+      constructor(public source:CardResponse) {
+          this.template = new Swiper.CardView();
+          this.elem = this.template.render(source);
+          this.init();
+
           // if (elem[0].width > 0 && elem[0].height > 0) {
           //     this.init()
           // } else {

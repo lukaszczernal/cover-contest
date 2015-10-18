@@ -8,6 +8,7 @@
 module Swiper {
 
     export class Deck extends Ctrl {
+        elemQueue: JQuery;
         pile: Array<Card> = [];
         first: Card;
         second: Card;
@@ -42,15 +43,23 @@ module Swiper {
             //load more cards
         };
 
-        createCards(res: DecksResponse) {
-            var cards: Array<DecksCardResponse> = res.data;
-            cards.forEach( (card:DecksCardResponse) => {
-                this.pile.push(new Card(card));
+        createCards(res:CardsResponse) {
+            var cards: Array<CardResponse> = res.data;
+            cards.forEach( (card:CardResponse) => {
+                this.addCard(new Card(card));
             });
         }
 
-        locateCards() {
-            // _len = this.pile.length
+        addCard(card:Card) {
+            var index:number = this.pile.push(card);
+            if (index < 4) {
+                card.elem.addClass('m-front-' + index)
+            };
+            this.elemQueue.prepend(card.elem);
+        }
+
+        // locateCards() {
+        //     var _len:number = this.pile.length
 
             // this.first = this.pile[_len - 1]
             // this.second = this.pile[_len - 2]
@@ -59,8 +68,8 @@ module Swiper {
             // this.first.elem.addClass('m-front-1');
             // this.second.elem.addClass('m-front-2');
             // this.third.elem.addClass('m-front-3');
-            return 'locateCards'
-        }
+        //     return 'locateCards'
+        // }
 
         subscribeEvents() {
             // this.elem.on('CARD-RATED', (evt: JQueryEventObject) => {
@@ -70,9 +79,9 @@ module Swiper {
         }
 
         init() {
+            this.elemQueue = this.elem.find('.swiper-queue');
             this.model.getAll()
                 .done((res) => this.createCards(res))
-                .done(() => this.locateCards())
                 .done(() => this.subscribeEvents());
         };
 

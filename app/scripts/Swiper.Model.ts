@@ -4,12 +4,12 @@
 
 module Swiper {
 
-    export interface DecksResponse {
-        data: Array<DecksCardResponse>;
+    export interface CardsResponse {
+        data: Array<CardResponse>;
         count: number;
     }
 
-    export interface DecksCardResponse {
+    export interface CardResponse {
         id: number;
         src: string;
         title: string;
