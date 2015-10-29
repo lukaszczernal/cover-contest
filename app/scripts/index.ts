@@ -16,7 +16,7 @@ declare var CC: any;
 
 function initSwiper() {
     var elem = $('#stage-1');
-    var model = new Swiper.Cards();
+    var model = new Swiper.CardsCollection();
     var view = new Swiper.DeckView();
 
     new Swiper.Deck(elem, model, view);

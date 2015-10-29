@@ -10,8 +10,8 @@ module Swiper {
         templateName: string;
 
         render(data: any) {
-            var elem:string = CC.templates[this.templateName]();
-            elem = $(elem);
+            var tmpl:string = CC.templates[this.templateName](data);
+            var elem:JQuery = $(tmpl);
             return elem;
         }
 

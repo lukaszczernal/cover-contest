@@ -20,7 +20,9 @@
   left 0px
   right 0px
 
-.swiper-imgWrapper
+// .swiper-imgWrapper
+
+.swiper-img
   position absolute
   left 50%
   display none
@@ -31,19 +33,27 @@
   &.tween
     transition transform 0.3s ease-out
 
-  &.m-front-1
+  .m-front-1 &
     display block
-    // transform translate(-50%, 100px)
     transform translate(-50%, 27%)
 
-  &.m-front-2
+  .m-front-2 &
     display block
-    // transform translate(-50%, 50px) scale(0.8)
     transform translate(-50%, 10%) scale(0.8)
     opacity 0.8
 
-  &.m-front-3
+  .m-front-3 &
     display block
-    // transform translate(-50%, -5px)  scale(0.5)
     transform translate(-50%, -8%)  scale(0.5)
     opacity 0.5
+
+.swiper-imgTitle
+  display none
+  text-align center
+  position absolute
+  bottom 8%
+  left 50%
+  transform translateX(-50%)
+
+  .m-front-1 &
+    display block

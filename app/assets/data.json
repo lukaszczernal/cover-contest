@@ -3,32 +3,32 @@
   [
     {
       "id": 1,
-      "src": "images/dvd/1.jgp",
+      "src": "images/dvd/1.jpg",
       "title": "Title 1"
     },
     {
       "id": 2,
-      "src": "images/dvd/2.jgp",
+      "src": "images/dvd/2.jpg",
       "title": "Title 2"
     },
     {
       "id": 3,
-      "src": "images/dvd/3.jgp",
+      "src": "images/dvd/3.jpg",
       "title": "Title 3"
     },
     {
       "id": 4,
-      "src": "images/dvd/4.jgp",
+      "src": "images/dvd/4.jpg",
       "title": "Title 4"
     },
     {
       "id": 5,
-      "src": "images/dvd/5.jgp",
+      "src": "images/dvd/5.jpg",
       "title": "Title 5"
     },
     {
       "id": 6,
-      "src": "images/dvd/6.jgp",
+      "src": "images/dvd/6.jpg",
       "title": "Title 6"
     }
   ],

@@ -6,12 +6,23 @@ module Swiper {
 
     export class Ctrl {
 
-        renderView() {
-            this.elem.html(this.view.render());
+        elem: JQuery;
+
+        render() {
+            this.elem = this.view.render(this.model.data);
         }
 
-        constructor(public elem:JQuery, public model:any, public view:any) {
-            this.renderView()
+        draw() {
+            this.parent.prepend(this.elem)
+        }
+
+        init() {
+
+        }
+
+        constructor(public parent: JQuery, public model: any, public view: Swiper.View) {
+            this.render();
+            this.init();
         }
     }
 }
