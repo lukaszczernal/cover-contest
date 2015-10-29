@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "postinstall": "bower cache clean; bower install"
+  },
   "devDependencies": {
     "browser-sync": "^2.7.1",
     "gulp": "^3.8.11",
