@@ -1,0 +1,47 @@
+.card
+  position absolute
+  top 0px
+  bottom 0px
+  left 0px
+  right 0px
+
+.card-img
+  position absolute
+  transform translate(0, 0)
+  top 0px
+  bottom 10%
+  left 0px
+  right 0px
+
+  &.tween
+    transition transform 0.3s ease-out
+
+  // .m-front-1 &
+  //   display block
+  //   transform translate(-50%, 27%)
+
+  // .m-front-2 &
+  //   display block
+  //   transform translate(-50%, 10%) scale(0.8)
+  //   opacity 0.8
+
+  // .m-front-3 &
+  //   display block
+  //   transform translate(-50%, -8%)  scale(0.5)
+  //   opacity 0.5
+
+.card-imgTag
+  height 100%
+
+.card-title
+  display none
+  text-align center
+  position absolute
+  padding-top 1em
+  top 90%
+  bottom 0%
+  left 50%
+  transform translateX(-50%)
+
+  .m-front-1 &
+    display block

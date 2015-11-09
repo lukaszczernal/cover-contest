@@ -60,8 +60,10 @@ module Swiper {
         };
 
         updatePosition() {
-            this.translateY = parseInt(this.elemImg.css('transform').split(',')[5], 10);
-            this.translateX = parseInt(this.elemImg.css('transform').split(',')[4], 10);
+            var _transformValue: string = this.elemImg.css('transform')
+
+            this.translateY = parseInt(_transformValue.split(',')[5], 10);
+            this.translateX = parseInt(_transformValue.split(',')[4], 10);
             this.newTranslateX = this.translateX;
             this.rotate = 0;
         };
@@ -74,18 +76,11 @@ module Swiper {
                 this.updatePosition()
                 this.registerEvents();
             }
-
-            if (this.elemImg[0].width > 0 && this.elemImg[0].height > 0) {
-                _init()
-            } else {
-                this.elemImg.load(() => {
-                    _init()
-                })
-            }
+            _init();
         };
 
         init() {
-            this.elemImg = this.elem.find('.swiper-img');
+            this.elemImg = this.elem.find('.card-img');
         };
 
         constructor(parent:JQuery, model:Swiper.Model, view:CardView) {
