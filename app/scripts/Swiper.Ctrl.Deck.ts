@@ -22,7 +22,7 @@ module Swiper {
         switchCard() {
             var i: number = 0;
             var len: number;
-            var limit: number = (len < 3) ? len : 3;
+            var limit: number = (len < 4) ? len : 4;
 
             this.removeFrontCard();
 
@@ -33,7 +33,7 @@ module Swiper {
                 i++;
             }
 
-            if (this.pile.length < 4)
+            if (this.pile.length < (limit + 1))
                 this.model.get();
         };
 
@@ -46,7 +46,7 @@ module Swiper {
 
         addCard(card:Card) {
             var index:number = this.pile.push(card);
-            if (index < 4) {
+            if (index < 5) {
                 card.elem.addClass('m-front-' + index)
             };
 

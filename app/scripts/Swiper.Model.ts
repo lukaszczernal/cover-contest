@@ -34,7 +34,7 @@ module Swiper {
         };
 
         publish(event: string, data?: any) {
-            if !this.isEventRegistered(event) return false
+            if (!this.isEventRegistered(event)) return false
 
             var _sendSubscription = (elem:any, i:number) => {
                 this.subscribers[event][i](data);

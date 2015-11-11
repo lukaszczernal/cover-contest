@@ -1,37 +1,51 @@
-.card
+// .card
+
+.card-img
+  display none
+  position absolute
+  top 15%
+  bottom 10%
+  left 0
+  right 0
+  transform translate(0, 0)
+
+  &.tween
+    transition all 0.3s ease-out
+
+  .m-front-1 &
+    display block
+    opacity 1
+
+  .m-front-2 &
+    display block
+    transform translate(0, -9%) scale(0.9)
+    opacity 0.8
+
+  .m-front-3 &
+    display block
+    transform translate(0, -17%)  scale(0.8)
+    opacity 0.5
+
+  .m-front-4 &
+    display block
+    opacity 0
+    transform translate(0, -26%) scale(0.7)
+
+.card-imgWrapper
   position absolute
   top 0px
   bottom 0px
-  left 0px
-  right 0px
-
-.card-img
-  position absolute
-  transform translate(0, 0)
-  top 0px
-  bottom 10%
-  left 0px
-  right 0px
-
-  &.tween
-    transition transform 0.3s ease-out
-
-  // .m-front-1 &
-  //   display block
-  //   transform translate(-50%, 27%)
-
-  // .m-front-2 &
-  //   display block
-  //   transform translate(-50%, 10%) scale(0.8)
-  //   opacity 0.8
-
-  // .m-front-3 &
-  //   display block
-  //   transform translate(-50%, -8%)  scale(0.5)
-  //   opacity 0.5
+  left 50%
+  transform translate(-50%, 0)
 
 .card-imgTag
   height 100%
+
+.card-imgOverlay
+  position absolute
+  top 0
+  height 100%
+  width 100%
 
 .card-title
   display none
