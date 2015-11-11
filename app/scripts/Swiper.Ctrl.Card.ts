@@ -9,10 +9,10 @@ module Swiper {
     export class Card extends Ctrl {
         elemImg: JQuery;
         hammer: HammerManager;
-        newTranslateX: number;
-        translateX: number;
-        translateY: number;
-        rotate: number;
+        newTranslateX: number = 0;
+        translateX: number = 0;
+        translateY: number = 0;
+        rotate: number = 0;
 
         transform() {
             var transformations: string[] = [];
@@ -65,9 +65,12 @@ module Swiper {
                 var distance: number = this.newTranslateX - this.translateX;
 
                 if (Math.abs(distance) > apex) {
+                    // TODO we can subscribe to onRate event
                     this.rotate = (distance > 0) ? 30 : -30;
                     this.translateX += (distance * 3);
                     this.unRegisterEvents();
+                    this.elemTitle.addClass('m-rated');
+                    //
                     this.model.rate(this, 1);
                 } else {
                     this.rotate = 0;
@@ -85,11 +88,12 @@ module Swiper {
 
         updatePosition() {
             var _transformValue: string = this.elemImg.css('transform').split(',')
-
-            this.translateY = parseInt(_transformValue[5], 10);
-            this.translateX = parseInt(_transformValue[4], 10);
-            this.newTranslateX = this.translateX;
-            this.rotate = 0;
+            if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
+                this.translateY = parseInt(_transformValue[5], 10);
+                this.translateX = parseInt(_transformValue[4], 10);
+                this.newTranslateX = this.translateX;
+                this.rotate = 0;
+            }
         };
 
         draw() {
@@ -105,6 +109,7 @@ module Swiper {
 
         init() {
             this.elemImg     = this.elem.find('.card-img');
+            this.elemTitle   = this.elem.find('.card-title');
             this.elemOverlay = this.elem.find('.card-imgOverlay');
         };
 
