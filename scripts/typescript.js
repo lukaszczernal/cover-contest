@@ -1,33 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
-var Swiper;
-(function (Swiper) {
-    var Ctrl = (function () {
-        function Ctrl(parent, model, view) {
-            this.parent = parent;
-            this.model = model;
-            this.view = view;
-            this.render();
-            this.init();
-        }
-        Ctrl.prototype.render = function () {
-            this.elem = this.view.render(this.model.data);
-        };
-        Ctrl.prototype.draw = function () {
-            this.parent.prepend(this.elem);
-        };
-        Ctrl.prototype.init = function () {
-        };
-        return Ctrl;
-    })();
-    Swiper.Ctrl = Ctrl;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    __.prototype = b.prototype;
+    d.prototype = new __();
 };
 var Swiper;
 (function (Swiper) {
@@ -160,6 +137,30 @@ var Swiper;
     Swiper.CardView = CardView;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Ctrl = (function () {
+        function Ctrl(parent, model, view) {
+            this.parent = parent;
+            this.model = model;
+            this.view = view;
+            this.render();
+            this.init();
+        }
+        Ctrl.prototype.render = function () {
+            this.elem = this.view.render(this.model.data);
+        };
+        Ctrl.prototype.draw = function () {
+            this.parent.prepend(this.elem);
+        };
+        Ctrl.prototype.init = function () {
+        };
+        return Ctrl;
+    })();
+    Swiper.Ctrl = Ctrl;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Model.ts" />
 /// <reference path="./Swiper.View.ts" />
@@ -170,6 +171,10 @@ var Swiper;
         __extends(Card, _super);
         function Card(parent, model, view) {
             _super.call(this, parent, model, view);
+            this.newTranslateX = 0;
+            this.translateX = 0;
+            this.translateY = 0;
+            this.rotate = 0;
         }
         Card.prototype.transform = function () {
             var transformations = [];
@@ -179,6 +184,13 @@ var Swiper;
             this.elemImg.css('transform', transformations.join(' '));
         };
         ;
+        Card.prototype.setOverlay = function (direction, percentage) {
+            var color;
+            percentage = percentage * 0.2;
+            color = (direction < 0) ? 'red' : 'green';
+            this.elemOverlay.css('backgroundColor', color);
+            this.elemOverlay.css('opacity', percentage);
+        };
         Card.prototype.registerEvents = function () {
             var _this = this;
             this.elemImg.on('transitionend', function () {
@@ -190,18 +202,28 @@ var Swiper;
             this.hammer.on("panleft panright", function (evt) {
                 var degMax = 10;
                 var deltaMax = 200;
+                var direction;
+                var deltaPerc;
+                var deltaAbsValue;
+                deltaAbsValue = Math.abs(evt.deltaX);
+                deltaPerc = deltaAbsValue / deltaMax;
+                direction = Math.sign(evt.deltaX);
                 _this.newTranslateX = _this.translateX + evt.deltaX;
-                _this.rotate = (Math.abs(evt.deltaX) < deltaMax) ? evt.deltaX / deltaMax * degMax : Math.sign(_this.newTranslateX) * degMax;
+                _this.rotate = (deltaAbsValue < deltaMax) ? direction * deltaPerc * degMax : direction * degMax;
                 _this.transform();
+                _this.setOverlay(direction, deltaPerc);
             });
             this.hammer.on("panend", function (evt) {
                 _this.elemImg.addClass('tween');
                 var apex = 180;
                 var distance = _this.newTranslateX - _this.translateX;
                 if (Math.abs(distance) > apex) {
+                    // TODO we can subscribe to onRate event
                     _this.rotate = (distance > 0) ? 30 : -30;
-                    _this.translateX = _this.translateX + distance;
-                    _this.translateX = _this.translateX + distance;
+                    _this.translateX += (distance * 3);
+                    _this.unRegisterEvents();
+                    _this.elemTitle.addClass('m-rated');
+                    //
                     _this.model.rate(_this, 1);
                 }
                 else {
@@ -209,14 +231,22 @@ var Swiper;
                 }
                 _this.newTranslateX = _this.translateX;
                 _this.transform();
+                _this.setOverlay(0, 0);
             });
         };
         ;
+        Card.prototype.unRegisterEvents = function () {
+            this.hammer.destroy();
+            // this.elemImg.unbind('transitionend'); @TODO to be considered
+        };
         Card.prototype.updatePosition = function () {
-            this.translateY = parseInt(this.elemImg.css('transform').split(',')[5], 10);
-            this.translateX = parseInt(this.elemImg.css('transform').split(',')[4], 10);
-            this.newTranslateX = this.translateX;
-            this.rotate = 0;
+            var _transformValue = this.elemImg.css('transform').split(',');
+            if (_transformValue[0] !== 'none') {
+                this.translateY = parseInt(_transformValue[5], 10);
+                this.translateX = parseInt(_transformValue[4], 10);
+                this.newTranslateX = this.translateX;
+                this.rotate = 0;
+            }
         };
         ;
         Card.prototype.draw = function () {
@@ -227,18 +257,13 @@ var Swiper;
                 _this.updatePosition();
                 _this.registerEvents();
             };
-            if (this.elemImg[0].width > 0 && this.elemImg[0].height > 0) {
-                _init();
-            }
-            else {
-                this.elemImg.load(function () {
-                    _init();
-                });
-            }
+            _init();
         };
         ;
         Card.prototype.init = function () {
-            this.elemImg = this.elem.find('.swiper-img');
+            this.elemImg = this.elem.find('.card-img');
+            this.elemTitle = this.elem.find('.card-title');
+            this.elemOverlay = this.elem.find('.card-imgOverlay');
         };
         ;
         ;
@@ -271,14 +296,14 @@ var Swiper;
         Deck.prototype.switchCard = function () {
             var i = 0;
             var len;
-            var limit = (len < 3) ? len : 3;
+            var limit = (len < 4) ? len : 4;
             this.removeFrontCard();
             len = this.pile.length;
             while (i < limit) {
                 this.pile[i].elem.removeClass('m-front-' + (i + 2)).addClass('m-front-' + (i + 1));
                 i++;
             }
-            if (this.pile.length < 4)
+            if (this.pile.length < (limit + 1))
                 this.model.get();
         };
         ;
@@ -291,7 +316,7 @@ var Swiper;
         };
         Deck.prototype.addCard = function (card) {
             var index = this.pile.push(card);
-            if (index < 4) {
+            if (index < 5) {
                 card.elem.addClass('m-front-' + index);
             }
             ;
