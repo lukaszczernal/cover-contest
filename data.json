@@ -4,32 +4,32 @@
     {
       "id": 1,
       "src": "images/dvd/1.jpg",
-      "title": "Title 1"
+      "title": "Mission Impossible: Rogue Nation"
     },
     {
       "id": 2,
       "src": "images/dvd/2.jpg",
-      "title": "Title 2"
+      "title": "Mad Max: Fury Road"
     },
     {
       "id": 3,
       "src": "images/dvd/3.jpg",
-      "title": "Title 3"
+      "title": "Pixels"
     },
     {
       "id": 4,
       "src": "images/dvd/4.jpg",
-      "title": "Title 4"
+      "title": "Birdman"
     },
     {
       "id": 5,
       "src": "images/dvd/5.jpg",
-      "title": "Title 5"
+      "title": "Interstellar"
     },
     {
       "id": 6,
       "src": "images/dvd/6.jpg",
-      "title": "Title 6"
+      "title": "Pixels"
     }
   ],
   "count": 6

@@ -1,10 +1,33 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
+var Swiper;
+(function (Swiper) {
+    var Ctrl = (function () {
+        function Ctrl(parent, model, view) {
+            this.parent = parent;
+            this.model = model;
+            this.view = view;
+            this.render();
+            this.init();
+        }
+        Ctrl.prototype.render = function () {
+            this.elem = this.view.render(this.model.data);
+        };
+        Ctrl.prototype.draw = function () {
+            this.parent.prepend(this.elem);
+        };
+        Ctrl.prototype.init = function () {
+        };
+        return Ctrl;
+    })();
+    Swiper.Ctrl = Ctrl;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Swiper;
 (function (Swiper) {
@@ -135,30 +158,6 @@ var Swiper;
         return CardView;
     })(View);
     Swiper.CardView = CardView;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-"use strict";
-var Swiper;
-(function (Swiper) {
-    var Ctrl = (function () {
-        function Ctrl(parent, model, view) {
-            this.parent = parent;
-            this.model = model;
-            this.view = view;
-            this.render();
-            this.init();
-        }
-        Ctrl.prototype.render = function () {
-            this.elem = this.view.render(this.model.data);
-        };
-        Ctrl.prototype.draw = function () {
-            this.parent.prepend(this.elem);
-        };
-        Ctrl.prototype.init = function () {
-        };
-        return Ctrl;
-    })();
-    Swiper.Ctrl = Ctrl;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />

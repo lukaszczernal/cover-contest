@@ -1,12 +1,15 @@
 html {
   height: 100%;
   overflow: hidden;
+  font-size: 62.5%;
 }
 body {
   height: 100%;
   overflow: auto;
-  background-color: #2cb4d6;
-  color: #fff;
+  background: url("../images/bg.jpg");
+  background-size: cover;
+  color: #74c6be;
+  font-family: 'helvetica', 'arial', 'sans';
 }
 .swiper-queue {
   position: absolute;
@@ -19,7 +22,7 @@ body {
   display: none;
   position: absolute;
   top: 15%;
-  bottom: 10%;
+  bottom: 21%;
   left: 0;
   right: 0;
   transform: translate(0, 0);
@@ -29,17 +32,14 @@ body {
 }
 .m-front-1 .card-img {
   display: block;
-  opacity: 1;
 }
 .m-front-2 .card-img {
   display: block;
   transform: translate(0, -9%) scale(0.9);
-  opacity: 0.8;
 }
 .m-front-3 .card-img {
   display: block;
   transform: translate(0, -17%) scale(0.8);
-  opacity: 0.5;
 }
 .m-front-4 .card-img {
   display: block;
@@ -61,16 +61,16 @@ body {
   top: 0;
   height: 100%;
   width: 100%;
-  background-color: #2cb4d6;
+  background-color: #012c30;
 }
 .m-front-1 .card-imgOverlay {
   opacity: 0;
 }
 .m-front-2 .card-imgOverlay {
-  opacity: 0.2;
+  opacity: 0.5;
 }
 .m-front-3 .card-imgOverlay {
-  opacity: 0.4;
+  opacity: 0.8;
 }
 .m-front-4 .card-imgOverlay {
   opacity: 1;
@@ -80,11 +80,12 @@ body {
   text-align: center;
   position: absolute;
   padding-top: 1em;
-  top: 90%;
+  top: 79%;
   bottom: 0%;
   left: 50%;
-  transform: translate(-50%, -20%) scale(0.9);
+  transform: translate(-50%, -30%) scale(0.5);
   transition: all 0.3s ease-out;
+  font-size: 1.6rem;
 }
 .m-front-1 .card-title {
   opacity: 1;
@@ -92,7 +93,7 @@ body {
 }
 .card-title.m-rated {
   opacity: 0;
-  transform: translate(-50%, 20%) scale(1.1);
+  transform: translate(-50%, 30%) scale(1.4);
 }
 #reload {
   position: absolute;
