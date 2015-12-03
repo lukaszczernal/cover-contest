@@ -1,33 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
-var Swiper;
-(function (Swiper) {
-    var Ctrl = (function () {
-        function Ctrl(parent, model, view) {
-            this.parent = parent;
-            this.model = model;
-            this.view = view;
-            this.render();
-            this.init();
-        }
-        Ctrl.prototype.render = function () {
-            this.elem = this.view.render(this.model.data);
-        };
-        Ctrl.prototype.draw = function () {
-            this.parent.prepend(this.elem);
-        };
-        Ctrl.prototype.init = function () {
-        };
-        return Ctrl;
-    })();
-    Swiper.Ctrl = Ctrl;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    __.prototype = b.prototype;
+    d.prototype = new __();
 };
 var Swiper;
 (function (Swiper) {
@@ -160,6 +137,30 @@ var Swiper;
     Swiper.CardView = CardView;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Ctrl = (function () {
+        function Ctrl(parent, model, view) {
+            this.parent = parent;
+            this.model = model;
+            this.view = view;
+            this.render();
+            this.init();
+        }
+        Ctrl.prototype.render = function () {
+            this.elem = this.view.render(this.model.data);
+        };
+        Ctrl.prototype.draw = function () {
+            this.parent.prepend(this.elem);
+        };
+        Ctrl.prototype.init = function () {
+        };
+        return Ctrl;
+    })();
+    Swiper.Ctrl = Ctrl;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Model.ts" />
 /// <reference path="./Swiper.View.ts" />
@@ -214,7 +215,7 @@ var Swiper;
             });
             this.hammer.on("panend", function (evt) {
                 _this.elemImg.addClass('tween');
-                var apex = 180;
+                var apex = 100;
                 var distance = _this.newTranslateX - _this.translateX;
                 if (Math.abs(distance) > apex) {
                     // TODO we can subscribe to onRate event
@@ -248,15 +249,14 @@ var Swiper;
             }
         };
         ;
-        Card.prototype.draw = function () {
-            var _this = this;
+        Card.prototype.draw = function (index) {
+            if (index === void 0) { index = 0; }
             _super.prototype.draw.call(this);
-            var _init = function () {
-                _this.hammer = new Hammer(_this.elemImg[0]);
-                _this.updatePosition();
-                _this.registerEvents();
-            };
-            _init();
+            this.hammer = new Hammer(this.elemImg[0]);
+            this.updatePosition();
+            // If card is front-most then add event listeners
+            if (index == 1)
+                this.registerEvents();
         };
         ;
         Card.prototype.init = function () {
@@ -292,16 +292,19 @@ var Swiper;
                 ratedCard.elem.remove();
             });
         };
+        ;
         Deck.prototype.switchCard = function () {
             var i = 0;
             var len;
             var limit = (len < 4) ? len : 4;
             this.removeFrontCard();
-            len = this.pile.length;
+            // @TODO add method to Card class - move forward (and add register event there)
             while (i < limit) {
                 this.pile[i].elem.removeClass('m-front-' + (i + 2)).addClass('m-front-' + (i + 1));
                 i++;
             }
+            //register touch events for the top-most card
+            this.pile[0].registerEvents();
             if (this.pile.length < (limit + 1))
                 this.model.get();
         };
@@ -319,7 +322,7 @@ var Swiper;
                 card.elem.addClass('m-front-' + index);
             }
             ;
-            card.draw();
+            card.draw(index);
         };
         Deck.prototype.subscribeEvents = function () {
             var _this = this;
