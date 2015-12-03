@@ -61,7 +61,7 @@ module Swiper {
 
             this.hammer.on("panend", (evt: HammerInput) => {
                 this.elemImg.addClass('tween');
-                var apex: number = 180
+                var apex: number = 100
                 var distance: number = this.newTranslateX - this.translateX;
 
                 if (Math.abs(distance) > apex) {
@@ -96,15 +96,14 @@ module Swiper {
             }
         };
 
-        draw() {
+        draw(index: int = 0) {
             super.draw();
 
-            var _init = () => {
-                this.hammer = new Hammer(this.elemImg[0]);
-                this.updatePosition()
-                this.registerEvents();
-            }
-            _init();
+            this.hammer = new Hammer(this.elemImg[0]);
+            this.updatePosition();
+
+            // If card is front-most then add event listeners
+            if (index == 1) this.registerEvents();
         };
 
         init() {

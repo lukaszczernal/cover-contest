@@ -17,7 +17,7 @@ module Swiper {
             ratedCard.elem.on('transitionend', function() {
                 ratedCard.elem.remove()
             });
-        }
+        };
 
         switchCard() {
             var i: number = 0;
@@ -26,12 +26,14 @@ module Swiper {
 
             this.removeFrontCard();
 
-            len = this.pile.length;
-
+            // @TODO add method to Card class - move forward (and add register event there)
             while(i < limit) {
                 this.pile[i].elem.removeClass('m-front-' + (i+2)).addClass('m-front-' + (i+1));
                 i++;
             }
+
+            //register touch events for the top-most card
+            this.pile[0].registerEvents()
 
             if (this.pile.length < (limit + 1))
                 this.model.get();
@@ -50,7 +52,7 @@ module Swiper {
                 card.elem.addClass('m-front-' + index)
             };
 
-            card.draw();
+            card.draw(index);
         }
 
         subscribeEvents() {

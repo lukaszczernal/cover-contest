@@ -91,7 +91,7 @@ gulp.task('scripts', function() {
 
 gulp.task('styles', function() {
   gulp.src(source.styles)
-    .pipe(plugins.stylus({use: nib()}))
+    .pipe(plugins.stylus({use: nib(), import: ['nib']}))
     .pipe(plugins.sourcemaps.write())
     .pipe(gulp.dest('public/styles/'))
 });
