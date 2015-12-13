@@ -11,13 +11,11 @@ module Swiper {
         hammer: HammerManager;
         newTranslateX: number = 0;
         translateX: number = 0;
-        translateY: number = 0;
         rotate: number = 0;
 
         transform() {
             var transformations: string[] = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
-            transformations.push("translateY(" + this.translateY + "px)");
             transformations.push("rotate(" + this.rotate + "deg)");
             this.elemImg.css('transform', transformations.join(' '));
         };
@@ -26,7 +24,7 @@ module Swiper {
             var color: string;
 
             percentage = percentage * 0.2
-            color = (direction < 0) ? 'red' : 'green';
+            color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
 
             this.elemOverlay.css('backgroundColor', color);
             this.elemOverlay.css('opacity', percentage);
@@ -61,16 +59,16 @@ module Swiper {
 
             this.hammer.on("panend", (evt: HammerInput) => {
                 this.elemImg.addClass('tween');
-                var apex: number = 100
-                var distance: number = this.newTranslateX - this.translateX;
+                var apex:number = 70;
+                var distance:number = this.newTranslateX - this.translateX;
+                var direction:number = Math.sign(distance);
 
                 if (Math.abs(distance) > apex) {
                     // TODO we can subscribe to onRate event
-                    this.rotate = (distance > 0) ? 30 : -30;
-                    this.translateX += (distance * 3);
+                    this.rotate = 30 * direction;
+                    this.translateX += (distance * 4); //TODO this should be calculated based on screen width
                     this.unRegisterEvents();
                     this.elemTitle.addClass('m-rated');
-                    //
                     this.model.rate(this, 1);
                 } else {
                     this.rotate = 0;
@@ -89,7 +87,6 @@ module Swiper {
         updatePosition() {
             var _transformValue: string = this.elemImg.css('transform').split(',')
             if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
-                this.translateY = parseInt(_transformValue[5], 10);
                 this.translateX = parseInt(_transformValue[4], 10);
                 this.newTranslateX = this.translateX;
                 this.rotate = 0;
