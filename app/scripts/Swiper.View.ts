@@ -15,24 +15,7 @@ module Swiper {
             return elem;
         }
 
-        constructor() {
+        constructor() {}
 
-        }
-    }
-
-    export class DeckView extends View {
-        templateName = 'deck';
-
-        constructor() {
-            super()
-        }
-    }
-
-    export class CardView extends View {
-        templateName = 'card';
-
-        constructor() {
-            super()
-        }
     }
 }
