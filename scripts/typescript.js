@@ -1,11 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 var Swiper;
 (function (Swiper) {
     var SubscriberPublisher = (function () {
@@ -34,21 +27,17 @@ var Swiper;
         return SubscriberPublisher;
     })();
     Swiper.SubscriberPublisher = SubscriberPublisher;
-    var Model = (function (_super) {
-        __extends(Model, _super);
-        function Model(data, collection) {
-            _super.call(this);
-            this.data = data;
-            this.collection = collection;
-        }
-        Model.prototype.publish = function (event, data) {
-            _super.prototype.publish.call(this, event, data);
-            if (!!this.collection)
-                this.collection.publish(event, data); // Event proxy
-        };
-        return Model;
-    })(SubscriberPublisher);
-    Swiper.Model = Model;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Events.ts" />
+"use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Swiper;
+(function (Swiper) {
     var Collection = (function (_super) {
         __extends(Collection, _super);
         function Collection() {
@@ -75,66 +64,67 @@ var Swiper;
             $.ajax(this.source).done(_fetchSuccess);
         };
         return Collection;
-    })(SubscriberPublisher);
+    })(Swiper.SubscriberPublisher);
     Swiper.Collection = Collection;
-    var CardsCollection = (function (_super) {
-        __extends(CardsCollection, _super);
-        function CardsCollection() {
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Collection.ts" />
+/// <reference path="./Swiper.Events.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Model = (function (_super) {
+        __extends(Model, _super);
+        function Model(data, model) {
+            _super.call(this);
+            this.data = data;
+            this.model = model;
+        }
+        Model.prototype.publish = function (event, data) {
+            _super.prototype.publish.call(this, event, data);
+            if (!!this.model)
+                this.model.publish(event, data); // Event proxy
+        };
+        return Model;
+    })(Swiper.SubscriberPublisher);
+    Swiper.Model = Model;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Collection.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var DeckModel = (function (_super) {
+        __extends(DeckModel, _super);
+        function DeckModel() {
             _super.apply(this, arguments);
             this.source = 'data.json';
-            this.model = Swiper.Cards;
+            this.model = Swiper.CardModel;
         }
-        return CardsCollection;
-    })(Collection);
-    Swiper.CardsCollection = CardsCollection;
-    var Cards = (function (_super) {
-        __extends(Cards, _super);
-        function Cards(data, collection) {
-            _super.call(this, data, collection);
+        return DeckModel;
+    })(Swiper.Collection);
+    Swiper.DeckModel = DeckModel;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Deck.Model.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var CardModel = (function (_super) {
+        __extends(CardModel, _super);
+        function CardModel(data, model) {
+            _super.call(this, data, model);
             this.EVENTS = {
                 'RATE': 'onRATE'
             };
         }
-        Cards.prototype.rate = function (card, grade) {
+        CardModel.prototype.rate = function (card, grade) {
             this.publish(this.EVENTS.RATE);
         };
-        return Cards;
-    })(Model);
-    Swiper.Cards = Cards;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-"use strict";
-var Swiper;
-(function (Swiper) {
-    var View = (function () {
-        function View() {
-        }
-        View.prototype.render = function (data) {
-            var tmpl = CC.templates[this.templateName](data);
-            var elem = $(tmpl);
-            return elem;
-        };
-        return View;
-    })();
-    Swiper.View = View;
-    var DeckView = (function (_super) {
-        __extends(DeckView, _super);
-        function DeckView() {
-            _super.call(this);
-            this.templateName = 'deck';
-        }
-        return DeckView;
-    })(View);
-    Swiper.DeckView = DeckView;
-    var CardView = (function (_super) {
-        __extends(CardView, _super);
-        function CardView() {
-            _super.call(this);
-            this.templateName = 'card';
-        }
-        return CardView;
-    })(View);
-    Swiper.CardView = CardView;
+        return CardModel;
+    })(Swiper.Model);
+    Swiper.CardModel = CardModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
@@ -147,6 +137,7 @@ var Swiper;
             this.view = view;
             this.render();
             this.init();
+            this.activate();
         }
         Ctrl.prototype.render = function () {
             this.elem = this.view.render(this.model.data);
@@ -156,13 +147,32 @@ var Swiper;
         };
         Ctrl.prototype.init = function () {
         };
+        Ctrl.prototype.activate = function () {
+        };
         return Ctrl;
     })();
     Swiper.Ctrl = Ctrl;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var View = (function () {
+        function View(templateName) {
+            this.templateName = templateName;
+        }
+        View.prototype.render = function (data) {
+            var tmpl = CC.templates[this.templateName](data);
+            var elem = $(tmpl);
+            return elem;
+        };
+        return View;
+    })();
+    Swiper.View = View;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Card.Model.ts" />
 /// <reference path="./Swiper.View.ts" />
 "use strict";
 var Swiper;
@@ -173,13 +183,11 @@ var Swiper;
             _super.call(this, parent, model, view);
             this.newTranslateX = 0;
             this.translateX = 0;
-            this.translateY = 0;
             this.rotate = 0;
         }
         Card.prototype.transform = function () {
             var transformations = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
-            transformations.push("translateY(" + this.translateY + "px)");
             transformations.push("rotate(" + this.rotate + "deg)");
             this.elemImg.css('transform', transformations.join(' '));
         };
@@ -187,7 +195,7 @@ var Swiper;
         Card.prototype.setOverlay = function (direction, percentage) {
             var color;
             percentage = percentage * 0.2;
-            color = (direction < 0) ? 'red' : 'green';
+            color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
             this.elemOverlay.css('backgroundColor', color);
             this.elemOverlay.css('opacity', percentage);
         };
@@ -196,10 +204,10 @@ var Swiper;
             this.elemImg.on('transitionend', function () {
                 _this.updatePosition();
             });
-            this.hammer.on("panstart", function () {
+            this.hammerElem.on("panstart", function () {
                 _this.elemImg.removeClass('tween');
             });
-            this.hammer.on("panleft panright", function (evt) {
+            this.hammerElem.on("panleft panright", function (evt) {
                 var degMax = 10;
                 var deltaMax = 200;
                 var direction;
@@ -213,17 +221,17 @@ var Swiper;
                 _this.transform();
                 _this.setOverlay(direction, deltaPerc);
             });
-            this.hammer.on("panend", function (evt) {
+            this.hammerElem.on("panend", function (evt) {
                 _this.elemImg.addClass('tween');
-                var apex = 100;
+                var apex = 70;
                 var distance = _this.newTranslateX - _this.translateX;
+                var direction = Math.sign(distance);
                 if (Math.abs(distance) > apex) {
                     // TODO we can subscribe to onRate event
-                    _this.rotate = (distance > 0) ? 30 : -30;
-                    _this.translateX += (distance * 3);
+                    _this.rotate = 30 * direction;
+                    _this.translateX += (distance * 4); //TODO this should be calculated based on screen width
                     _this.unRegisterEvents();
                     _this.elemTitle.addClass('m-rated');
-                    //
                     _this.model.rate(_this, 1);
                 }
                 else {
@@ -236,13 +244,12 @@ var Swiper;
         };
         ;
         Card.prototype.unRegisterEvents = function () {
-            this.hammer.destroy();
+            this.hammerElem.destroy();
             // this.elemImg.unbind('transitionend'); @TODO to be considered
         };
         Card.prototype.updatePosition = function () {
             var _transformValue = this.elemImg.css('transform').split(',');
             if (_transformValue[0] !== 'none') {
-                this.translateY = parseInt(_transformValue[5], 10);
                 this.translateX = parseInt(_transformValue[4], 10);
                 this.newTranslateX = this.translateX;
                 this.rotate = 0;
@@ -252,7 +259,7 @@ var Swiper;
         Card.prototype.draw = function (index) {
             if (index === void 0) { index = 0; }
             _super.prototype.draw.call(this);
-            this.hammer = new Hammer(this.elemImg[0]);
+            this.hammerElem = new Hammer(this.elemImg[0]);
             this.updatePosition();
             // If card is front-most then add event listeners
             if (index == 1)
@@ -271,10 +278,46 @@ var Swiper;
     Swiper.Card = Card;
     ;
 })(Swiper || (Swiper = {}));
+var Swiper;
+(function (Swiper) {
+    var Route = (function () {
+        function Route() {
+        }
+        Route.goto = function (name) {
+            var target = this.states[name];
+            if (!target) {
+                console.count(name + ' init');
+                target = this.init(name);
+                this.states[name] = target;
+            }
+            ;
+            this.statesElem.hide();
+            target.parent.show();
+        };
+        Route.init = function (moduleName) {
+            var moduleLowerCase = moduleName.toLowerCase();
+            var moduleCapital = this.toCapitalLetter(moduleLowerCase);
+            var moduleElem = '#' + moduleLowerCase;
+            var moduleModel = moduleCapital + 'Model';
+            var elem = $(moduleElem);
+            var model = new Swiper[moduleModel]();
+            var view = new Swiper.View(moduleName);
+            return new Swiper[moduleCapital](elem, model, view);
+        };
+        Route.toCapitalLetter = function (string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        };
+        Route.statesElem = $('.state');
+        Route.states = {};
+        return Route;
+    })();
+    Swiper.Route = Route;
+})(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Ctrl.Card.ts" />
+/// <reference path="./Swiper.Card.ts" />
 /// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Route.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
@@ -287,32 +330,37 @@ var Swiper;
         }
         Deck.prototype.removeFrontCard = function () {
             var ratedCard;
+            var len;
             ratedCard = Array.prototype.shift.call(this.pile);
+            len = this.pile.length;
             ratedCard.elem.on('transitionend', function () {
                 ratedCard.elem.remove();
+                // @TODO this if should be handled differently ie. trigger end_rate event??
+                if (len === 0)
+                    Swiper.Route.goto('home');
             });
+            return len;
         };
         ;
         Deck.prototype.switchCard = function () {
             var i = 0;
             var len;
-            var limit = (len < 4) ? len : 4;
-            this.removeFrontCard();
+            var limit;
+            len = this.removeFrontCard();
+            limit = (len < 4) ? len : 4;
             // @TODO add method to Card class - move forward (and add register event there)
             while (i < limit) {
                 this.pile[i].elem.removeClass('m-front-' + (i + 2)).addClass('m-front-' + (i + 1));
                 i++;
             }
-            //register touch events for the top-most card
-            this.pile[0].registerEvents();
-            if (this.pile.length < (limit + 1))
-                this.model.get();
+            if (len > 0)
+                this.pile[0].registerEvents(); //register touch events for the top-most card
         };
         ;
         Deck.prototype.createCards = function (cards) {
             var _this = this;
             cards.forEach(function (cardModel) {
-                var cardCtrl = new Swiper.Card(_this.elemQueue, cardModel, new Swiper.CardView());
+                var cardCtrl = new Swiper.Card(_this.elemQueue, cardModel, new Swiper.View('card'));
                 _this.addCard(cardCtrl);
             });
         };
@@ -332,9 +380,11 @@ var Swiper;
         Deck.prototype.init = function () {
             this.elemQueue = this.elem.find('.swiper-queue');
             this.subscribeEvents();
-            this.model.get();
         };
         ;
+        Deck.prototype.activate = function () {
+            this.model.get();
+        };
         return Deck;
     })(Swiper.Ctrl);
     Swiper.Deck = Deck;
@@ -342,21 +392,48 @@ var Swiper;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Model.ts" />
-/// <reference path="./Swiper.View.ts" />
-/// <reference path="./Swiper.Ctrl.Card.ts" />
-/// <reference path="./Swiper.Ctrl.Deck.ts" />
 "use strict";
-// function switchScene(stageID: string, template: string, callback: Function) {
-//   var stage: JQuery = $('#' + stageID);
-//   stage.html(CC.templates[template]());
-//   if (callback) callback();
-// };
-function initSwiper() {
-    var elem = $('#stage-1');
-    var model = new Swiper.CardsCollection();
-    var view = new Swiper.DeckView();
-    new Swiper.Deck(elem, model, view);
-}
+var Swiper;
+(function (Swiper) {
+    var HomeModel = (function (_super) {
+        __extends(HomeModel, _super);
+        function HomeModel() {
+            _super.apply(this, arguments);
+        }
+        return HomeModel;
+    })(Swiper.Model);
+    Swiper.HomeModel = HomeModel;
+})(Swiper || (Swiper = {}));
+/// <reference path="./Swiper.Ctrl.ts" />
+/// <reference path="./Swiper.Home.Model.ts" />
+/// <reference path="./Swiper.Route.ts" />
+var Swiper;
+(function (Swiper) {
+    var Home = (function (_super) {
+        __extends(Home, _super);
+        function Home(parent, model, view) {
+            _super.call(this, parent, model, view);
+            this.draw();
+        }
+        Home.prototype.startContest = function () {
+            Swiper.Route.goto('deck');
+        };
+        Home.prototype.registerEvents = function () {
+            this.startButton.on('click', this.startContest);
+        };
+        Home.prototype.init = function () {
+            this.startButton = this.elem.children('.home-start');
+            this.registerEvents();
+        };
+        return Home;
+    })(Swiper.Ctrl);
+    Swiper.Home = Home;
+})(Swiper || (Swiper = {}));
+"use strict";
+/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    Swiper.Route.goto('home');
+})(Swiper || (Swiper = {}));
 ;
-initSwiper();
-// switchScene('stage-1', 'swiper', initSwiper); 
