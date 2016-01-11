@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Card.Model.ts" />
 /// <reference path="./Swiper.View.ts" />
 
 "use strict"
@@ -8,7 +8,9 @@
 module Swiper {
     export class Card extends Ctrl {
         elemImg: JQuery;
-        hammer: HammerManager;
+        elemTitle: JQuery;
+        elemOverlay: JQuery;
+        hammerElem: HammerManager;
         newTranslateX: number = 0;
         translateX: number = 0;
         rotate: number = 0;
@@ -35,11 +37,11 @@ module Swiper {
                 this.updatePosition();
             });
 
-            this.hammer.on("panstart", () => {
+            this.hammerElem.on("panstart", () => {
                 this.elemImg.removeClass('tween');
             });
 
-            this.hammer.on("panleft panright", (evt: HammerInput) => {
+            this.hammerElem.on("panleft panright", (evt: HammerInput) => {
                 var degMax: number = 10;
                 var deltaMax: number = 200;
                 var direction: number;
@@ -57,7 +59,7 @@ module Swiper {
                 this.setOverlay(direction, deltaPerc);
             });
 
-            this.hammer.on("panend", (evt: HammerInput) => {
+            this.hammerElem.on("panend", (evt: HammerInput) => {
                 this.elemImg.addClass('tween');
                 var apex:number = 70;
                 var distance:number = this.newTranslateX - this.translateX;
@@ -80,12 +82,12 @@ module Swiper {
         };
 
         unRegisterEvents() {
-            this.hammer.destroy();
+            this.hammerElem.destroy();
             // this.elemImg.unbind('transitionend'); @TODO to be considered
         }
 
         updatePosition() {
-            var _transformValue: string = this.elemImg.css('transform').split(',')
+            var _transformValue:string[] = this.elemImg.css('transform').split(',')
             if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
                 this.translateX = parseInt(_transformValue[4], 10);
                 this.newTranslateX = this.translateX;
@@ -93,10 +95,10 @@ module Swiper {
             }
         };
 
-        draw(index: int = 0) {
+        draw(index: number = 0) {
             super.draw();
 
-            this.hammer = new Hammer(this.elemImg[0]);
+            this.hammerElem = new Hammer(this.elemImg[0]);
             this.updatePosition();
 
             // If card is front-most then add event listeners
@@ -109,7 +111,7 @@ module Swiper {
             this.elemOverlay = this.elem.find('.card-imgOverlay');
         };
 
-        constructor(parent :JQuery, model:Swiper.Model, view:CardView) {
+        constructor(parent:JQuery, model:Swiper.Model, view:View) {
             super(parent, model, view);
         };
     };

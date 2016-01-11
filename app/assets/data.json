@@ -30,7 +30,27 @@
       "id": 6,
       "src": "images/dvd/6.jpg",
       "title": "Pixels"
+    },
+    {
+      "id": 1,
+      "src": "images/dvd/1.jpg",
+      "title": "Mission Impossible: Rogue Nation"
+    },
+    {
+      "id": 2,
+      "src": "images/dvd/2.jpg",
+      "title": "Mad Max: Fury Road"
+    },
+    {
+      "id": 3,
+      "src": "images/dvd/3.jpg",
+      "title": "Pixels"
+    },
+    {
+      "id": 4,
+      "src": "images/dvd/4.jpg",
+      "title": "Birdman"
     }
   ],
-  "count": 6
+  "count": 10
 }

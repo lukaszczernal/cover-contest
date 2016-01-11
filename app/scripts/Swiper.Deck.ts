@@ -1,7 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Ctrl.Card.ts" />
+/// <reference path="./Swiper.Card.ts" />
 /// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Route.ts" />
 
 "use strict"
 
@@ -11,20 +12,27 @@ module Swiper {
         elemQueue: JQuery;
         pile: Array<Card> = [];
 
-        removeFrontCard() {
+        removeFrontCard(): number {
             var ratedCard: Card;
+            var len: number;
             ratedCard = Array.prototype.shift.call(this.pile);
+            len = this.pile.length;
             ratedCard.elem.on('transitionend', function() {
-                ratedCard.elem.remove()
+                ratedCard.elem.remove();
+                // @TODO this if should be handled differently ie. trigger end_rate event??
+                if (len === 0)
+                  Route.goto('home');
             });
+            return len;
         };
 
         switchCard() {
             var i: number = 0;
             var len: number;
-            var limit: number = (len < 4) ? len : 4;
+            var limit: number;
 
-            this.removeFrontCard();
+            len = this.removeFrontCard();
+            limit = (len < 4) ? len : 4;
 
             // @TODO add method to Card class - move forward (and add register event there)
             while(i < limit) {
@@ -32,16 +40,13 @@ module Swiper {
                 i++;
             }
 
-            //register touch events for the top-most card
-            this.pile[0].registerEvents()
-
-            if (this.pile.length < (limit + 1))
-                this.model.get();
+            if (len > 0)
+              this.pile[0].registerEvents() //register touch events for the top-most card
         };
 
-        createCards(cards: Array<Cards>) {
-            cards.forEach( (cardModel:Cards) => {
-                var cardCtrl: Card = new Card(this.elemQueue, cardModel, new Swiper.CardView())
+        createCards(cards: Array<CardModel>) {
+            cards.forEach( (cardModel:CardModel) => {
+                var cardCtrl: Card = new Card(this.elemQueue, cardModel, new Swiper.View('card'));
                 this.addCard(cardCtrl);
             });
         }
@@ -57,16 +62,19 @@ module Swiper {
 
         subscribeEvents() {
             this.model.subscribe('onRATE', () => this.switchCard());
-            this.model.subscribe('onGET', (res: Array<Cards>) => this.createCards(res));
+            this.model.subscribe('onGET', (res: Array<CardModel>) => this.createCards(res));
         }
 
         init() {
             this.elemQueue = this.elem.find('.swiper-queue');
             this.subscribeEvents();
-            this.model.get();
         };
 
-        constructor(parent: JQuery, model: CardsCollection, view: DeckView) {
+        activate() {
+          this.model.get();
+        }
+
+        constructor(parent: JQuery, model: DeckModel, view: View) {
             super(parent, model, view);
             this.draw();
         }

@@ -1,0 +1,51 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "filesGlob": [
+        "**/*.ts",
+        "**/*.tsx",
+        "!node_modules/**"
+    ],
+    "exclude": [
+        "node_modules",
+        "bower_components"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "files": [
+        "app/scripts/Swiper.Card.Model.ts",
+        "app/scripts/Swiper.Card.ts",
+        "app/scripts/Swiper.Collection.ts",
+        "app/scripts/Swiper.Ctrl.ts",
+        "app/scripts/Swiper.Deck.Model.ts",
+        "app/scripts/Swiper.Deck.ts",
+        "app/scripts/Swiper.Events.ts",
+        "app/scripts/Swiper.Home.Model.ts",
+        "app/scripts/Swiper.Home.ts",
+        "app/scripts/Swiper.Interface.ts",
+        "app/scripts/Swiper.Model.ts",
+        "app/scripts/Swiper.Route.ts",
+        "app/scripts/Swiper.ts",
+        "app/scripts/Swiper.View.ts",
+        "typings/hammerjs/hammerjs.d.ts",
+        "typings/jquery/jquery.d.ts",
+        "typings/touch-events/touch-events.d.ts",
+        "typings/tsd.d.ts"
+    ]
+}

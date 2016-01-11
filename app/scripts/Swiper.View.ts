@@ -7,7 +7,6 @@ declare var CC: any;
 module Swiper {
 
     export class View {
-        templateName: string;
 
         render(data: any) {
             var tmpl:string = CC.templates[this.templateName](data);
@@ -15,7 +14,9 @@ module Swiper {
             return elem;
         }
 
-        constructor() {}
+        constructor(public templateName: string) {
+
+        }
 
     }
 }
