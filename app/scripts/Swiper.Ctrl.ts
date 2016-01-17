@@ -27,7 +27,6 @@ module Swiper {
         constructor(public parent: JQuery, public model: any, public view: Swiper.View) {
             this.render();
             this.init();
-            this.activate();
         }
     }
 }

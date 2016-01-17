@@ -21,7 +21,7 @@ module Swiper {
                 ratedCard.elem.remove();
                 // @TODO this if should be handled differently ie. trigger end_rate event??
                 if (len === 0)
-                  Route.goto('home');
+                  Route.goto('summary');
             });
             return len;
         };
