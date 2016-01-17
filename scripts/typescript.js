@@ -137,7 +137,6 @@ var Swiper;
             this.view = view;
             this.render();
             this.init();
-            this.activate();
         }
         Ctrl.prototype.render = function () {
             this.elem = this.view.render(this.model.data);
@@ -188,6 +187,7 @@ var Swiper;
         Card.prototype.transform = function () {
             var transformations = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
+            transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
             this.elemImg.css('transform', transformations.join(' '));
         };
@@ -290,7 +290,8 @@ var Swiper;
                 target = this.init(name);
                 this.states[name] = target;
             }
-            ;
+            // todo deactivate previous state
+            target.activate();
             this.statesElem.hide();
             target.parent.show();
         };
@@ -337,7 +338,7 @@ var Swiper;
                 ratedCard.elem.remove();
                 // @TODO this if should be handled differently ie. trigger end_rate event??
                 if (len === 0)
-                    Swiper.Route.goto('home');
+                    Swiper.Route.goto('summary');
             });
             return len;
         };
@@ -390,7 +391,6 @@ var Swiper;
     Swiper.Deck = Deck;
     ;
 })(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Model.ts" />
 "use strict";
 var Swiper;
@@ -430,6 +430,50 @@ var Swiper;
     Swiper.Home = Home;
 })(Swiper || (Swiper = {}));
 "use strict";
+/// <reference path="./Swiper.Model.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var SummaryModel = (function (_super) {
+        __extends(SummaryModel, _super);
+        function SummaryModel() {
+            _super.apply(this, arguments);
+        }
+        return SummaryModel;
+    })(Swiper.Model);
+    Swiper.SummaryModel = SummaryModel;
+})(Swiper || (Swiper = {}));
+/// <reference path="./Swiper.Ctrl.ts" />
+/// <reference path="./Swiper.Route.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Summary = (function (_super) {
+        __extends(Summary, _super);
+        function Summary() {
+            _super.apply(this, arguments);
+        }
+        Summary.prototype.goToDeck = function () {
+            Swiper.Route.goto('deck');
+        };
+        Summary.prototype.goToHome = function () {
+            Swiper.Route.goto('home');
+        };
+        Summary.prototype.subscribeEvents = function () {
+            this.elemGoToDeck.click(this.goToDeck);
+            this.elemGoToHome.click(this.goToHome);
+        };
+        Summary.prototype.init = function () {
+            this.draw();
+            this.elemGoToDeck = this.parent.find('.summary-goToDeck');
+            this.elemGoToHome = this.parent.find('.summary-goToHome');
+            this.subscribeEvents();
+        };
+        ;
+        return Summary;
+    })(Swiper.Ctrl);
+    Swiper.Summary = Summary;
+})(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
 var Swiper;

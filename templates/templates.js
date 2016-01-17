@@ -15,3 +15,6 @@ this["CC"]["templates"]["deck"] = Handlebars.template({"compiler":[6,">= 2.0.0-b
 this["CC"]["templates"]["home"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<section class=\"home\">\n\n  <h2>Cover Contest</h2>\n  <h1>Extravaganza</h1>\n  <button class=\"home-start\">Start</button>\n\n</section>\n";
 },"useData":true});
+this["CC"]["templates"]["summary"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<h1>Summary</h1>\n<button class=\"summary-goToDeck\">Again</button>\n<br/>\n<br/>\n<button class=\"summary-goToHome\">Home</button>\n";
+},"useData":true});
