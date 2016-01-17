@@ -41,6 +41,8 @@
         "app/scripts/Swiper.Interface.ts",
         "app/scripts/Swiper.Model.ts",
         "app/scripts/Swiper.Route.ts",
+        "app/scripts/Swiper.Summary.Model.ts",
+        "app/scripts/Swiper.Summary.ts",
         "app/scripts/Swiper.ts",
         "app/scripts/Swiper.View.ts",
         "typings/hammerjs/hammerjs.d.ts",

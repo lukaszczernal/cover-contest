@@ -4,7 +4,7 @@
 
 module Swiper {
 
-  export class HomeModel extends Model {
+  export class SummaryModel extends Model {
 
   }
 

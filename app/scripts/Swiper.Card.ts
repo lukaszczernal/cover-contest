@@ -18,6 +18,7 @@ module Swiper {
         transform() {
             var transformations: string[] = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
+            transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
             this.elemImg.css('transform', transformations.join(' '));
         };

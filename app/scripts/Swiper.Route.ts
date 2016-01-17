@@ -12,7 +12,10 @@ module Swiper {
         console.count(name+' init');
         target = this.init(name);
         this.states[name] = target;
-      };
+      }
+
+      // todo deactivate previous state
+      target.activate();
 
       this.statesElem.hide();
       target.parent.show();
