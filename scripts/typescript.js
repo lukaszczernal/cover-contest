@@ -278,6 +278,25 @@ var Swiper;
     Swiper.Card = Card;
     ;
 })(Swiper || (Swiper = {}));
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Config = (function () {
+        function Config() {
+        }
+        Config.run = function () {
+            this.setFastClick();
+        };
+        Config.setFastClick = function () {
+            $(function () {
+                FastClick.attach(document.body);
+            });
+        };
+        return Config;
+    })();
+    Swiper.Config = Config;
+})(Swiper || (Swiper = {}));
+;
 var Swiper;
 (function (Swiper) {
     var Route = (function () {
@@ -475,9 +494,11 @@ var Swiper;
     Swiper.Summary = Summary;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Config.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
+    Swiper.Config.run();
     Swiper.Route.goto('home');
 })(Swiper || (Swiper = {}));
 ;
