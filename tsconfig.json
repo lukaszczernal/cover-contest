@@ -32,6 +32,7 @@
         "app/scripts/Swiper.Card.Model.ts",
         "app/scripts/Swiper.Card.ts",
         "app/scripts/Swiper.Collection.ts",
+        "app/scripts/Swiper.Config.ts",
         "app/scripts/Swiper.Ctrl.ts",
         "app/scripts/Swiper.Deck.Model.ts",
         "app/scripts/Swiper.Deck.ts",

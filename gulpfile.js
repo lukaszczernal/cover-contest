@@ -28,7 +28,8 @@ var source = {
     // 'bower_components/react/react.js',
     // 'bower_components/react/JSXTransformer.js',
     'bower_components/handlebars/handlebars.runtime.js',
-    'bower_components/inobounce/inobounce.js'
+    'bower_components/inobounce/inobounce.js',
+    'bower_components/fastclick/lib/fastclick.js'
  ];
 
 gulp.task('browserSync', function () {
