@@ -41,28 +41,19 @@ var Swiper;
     var Collection = (function (_super) {
         __extends(Collection, _super);
         function Collection() {
+            var _this = this;
             _super.call(this);
             this.EVENTS = {
                 'GET': 'onGET'
             };
-            this.data = [];
             this.source = null;
+            this.collection = [];
+            this.total = 0;
+            this.emit = function () {
+                _this.publish(_this.EVENTS.GET, _this.collection);
+            };
         }
-        Collection.prototype.get = function () {
-            var _this = this;
-            var rawData;
-            var transformedData = [];
-            var _transform = function (cardData) {
-                transformedData.push(new _this.model(cardData, _this));
-            };
-            var _fetchSuccess = function (res) {
-                rawData = res.data;
-                rawData.forEach(_transform);
-                _this.data.concat(transformedData);
-                _this.publish(_this.EVENTS.GET, transformedData);
-            };
-            $.ajax(this.source).done(_fetchSuccess);
-        };
+        Collection.prototype.get = function () { };
         return Collection;
     })(Swiper.SubscriberPublisher);
     Swiper.Collection = Collection;
@@ -97,10 +88,50 @@ var Swiper;
     var DeckModel = (function (_super) {
         __extends(DeckModel, _super);
         function DeckModel() {
+            var _this = this;
             _super.apply(this, arguments);
-            this.source = 'data.json';
+            this.source = 'http://aws-xstream-api-testing.xstream.dk/media/videos?limit=10&no_series=true&offset=';
             this.model = Swiper.CardModel;
+            this.total = 71; // todo last known count - how to calculate?
+            this.transform = function (data) {
+                var cards = [];
+                data.media.forEach(function (media) {
+                    var card = _this.transformCard(media);
+                    cards.push(new _this.model(card, _this));
+                });
+                _this.total = data.count;
+                _this.collection = _.shuffle(cards);
+            };
         }
+        DeckModel.prototype.get = function () {
+            $.ajax(this.source + this.randomOffset())
+                .then(this.transform)
+                .then(this.emit);
+        };
+        DeckModel.prototype.randomOffset = function () {
+            var limit = 10; // todo this should come from config - related to deal settings
+            var pages = Math.floor(this.total / limit);
+            var rand = Math.floor(Math.random() * pages) * limit;
+            return rand;
+        };
+        DeckModel.prototype.transformImage = function (images) {
+            var len = images.length;
+            while (--len) {
+                var img = images[len].format['a-iPad-DVD-x2'];
+                if (img) {
+                    return img.source;
+                }
+            }
+            ;
+            return 'images/no-image.jpg';
+        };
+        DeckModel.prototype.transformCard = function (card) {
+            return {
+                id: card.id,
+                src: this.transformImage(card.images),
+                title: card.titles.default
+            };
+        };
         return DeckModel;
     })(Swiper.Collection);
     Swiper.DeckModel = DeckModel;
@@ -226,11 +257,13 @@ var Swiper;
                 var apex = 70;
                 var distance = _this.newTranslateX - _this.translateX;
                 var direction = Math.sign(distance);
+                var velocity = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
                 if (Math.abs(distance) > apex) {
                     // TODO we can subscribe to onRate event
                     _this.rotate = 30 * direction;
-                    _this.translateX += (distance * 4); //TODO this should be calculated based on screen width
+                    _this.translateX += (distance * velocity);
                     _this.unRegisterEvents();
+                    _this.elemImg.addClass('m-rated');
                     _this.elemTitle.addClass('m-rated');
                     _this.model.rate(_this, 1);
                 }
@@ -278,6 +311,7 @@ var Swiper;
     Swiper.Card = Card;
     ;
 })(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
@@ -443,6 +477,7 @@ var Swiper;
         Home.prototype.init = function () {
             this.startButton = this.elem.children('.home-start');
             this.registerEvents();
+            //todo load first deal
         };
         return Home;
     })(Swiper.Ctrl);

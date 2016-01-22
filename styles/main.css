@@ -35,6 +35,11 @@ body {
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
 }
+.card-img.m-rated {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+}
 .card-img.tween {
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
@@ -190,21 +195,36 @@ body {
   font-size: 1.75rem;
   line-height: 1.75rem;
 }
+.home-poweredby {
+  margin: 1.1rem auto 0 auto;
+  max-width: 420px;
+  width: 100%;
+}
+.home-poweredbyLabel {
+  display: inline-block;
+  font-size: 0.7rem;
+}
+.home-poweredbyLogo {
+  display: inline-block;
+  width: 5rem;
+}
 .home-instructions {
   display: block;
-  font-size: 1.75rem;
-  line-height: 2.05rem;
+  font-size: 1.4rem;
+  line-height: 1.7rem;
 }
 .home-instructions:first-of-type {
   padding-top: 4rem;
 }
 .home-swipe {
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 2rem auto;
   max-width: 420px;
   width: 100%;
 }
-.home-swipeArrow {
-  height: 5rem;
+.home-swipeArrowImg {
+  margin-top: -10%;
+  margin-bottom: -30%;
+  width: 70%;
 }
 .home-swipeLabel {
   display: inline-block;
