@@ -20,6 +20,7 @@ module Swiper {
     init() {
         this.startButton = this.elem.children('.home-start');
         this.registerEvents();
+        //todo load first deal
     }
 
     constructor(parent: JQuery, model: HomeModel, view: View) {

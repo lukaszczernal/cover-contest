@@ -65,12 +65,14 @@ module Swiper {
                 var apex:number = 70;
                 var distance:number = this.newTranslateX - this.translateX;
                 var direction:number = Math.sign(distance);
+                var velocity:number = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
 
                 if (Math.abs(distance) > apex) {
                     // TODO we can subscribe to onRate event
                     this.rotate = 30 * direction;
-                    this.translateX += (distance * 4); //TODO this should be calculated based on screen width
+                    this.translateX += (distance * velocity);
                     this.unRegisterEvents();
+                    this.elemImg.addClass('m-rated');
                     this.elemTitle.addClass('m-rated');
                     this.model.rate(this, 1);
                 } else {

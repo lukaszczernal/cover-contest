@@ -1,6 +1,6 @@
-"use strict"
+/// <reference path="../../typings/tsd.d.ts" />
 
-declare var FastClick: any;
+"use strict"
 
 module Swiper {
 
