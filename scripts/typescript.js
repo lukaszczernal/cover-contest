@@ -104,7 +104,7 @@ var Swiper;
             };
         }
         DeckModel.prototype.get = function () {
-            $.ajax(this.source + this.randomOffset())
+            return $.ajax(this.source + this.randomOffset())
                 .then(this.transform)
                 .then(this.emit);
         };
@@ -116,7 +116,7 @@ var Swiper;
         };
         DeckModel.prototype.transformImage = function (images) {
             var len = images.length;
-            while (--len) {
+            while (len--) {
                 var img = images[len].format['a-iPad-DVD-x2'];
                 if (img) {
                     return img.source;
@@ -337,16 +337,19 @@ var Swiper;
         function Route() {
         }
         Route.goto = function (name) {
+            var target = Route.get(name);
+            target.activate(); // todo deactivate previous state
+            this.statesElem.hide();
+            target.parent.show();
+        };
+        Route.get = function (name) {
             var target = this.states[name];
             if (!target) {
                 console.count(name + ' init');
                 target = this.init(name);
                 this.states[name] = target;
             }
-            // todo deactivate previous state
-            target.activate();
-            this.statesElem.hide();
-            target.parent.show();
+            return target;
         };
         Route.init = function (moduleName) {
             var moduleLowerCase = moduleName.toLowerCase();
@@ -437,7 +440,8 @@ var Swiper;
         };
         ;
         Deck.prototype.activate = function () {
-            this.model.get();
+            if (this.pile.length === 0)
+                this.model.get();
         };
         return Deck;
     })(Swiper.Ctrl);
@@ -459,6 +463,8 @@ var Swiper;
 })(Swiper || (Swiper = {}));
 /// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Home.Model.ts" />
+/// <reference path="./Swiper.Deck.ts" />
+/// <reference path="./Swiper.Deck.Model.ts" />
 /// <reference path="./Swiper.Route.ts" />
 var Swiper;
 (function (Swiper) {
@@ -474,10 +480,18 @@ var Swiper;
         Home.prototype.registerEvents = function () {
             this.startButton.on('click', this.startContest);
         };
-        Home.prototype.init = function () {
-            this.startButton = this.elem.children('.home-start');
+        Home.prototype.loadFirstDeal = function () {
+            var _this = this;
+            this.startButton.text('Loading');
+            Swiper.Route.get('deck').model.get().done(function () { return _this.onDealLoad(); });
+        };
+        Home.prototype.onDealLoad = function () {
             this.registerEvents();
-            //todo load first deal
+            this.startButton.text('Start');
+        };
+        Home.prototype.init = function () {
+            this.startButton = this.elem.find('.home-start .btn');
+            this.loadFirstDeal();
         };
         return Home;
     })(Swiper.Ctrl);
