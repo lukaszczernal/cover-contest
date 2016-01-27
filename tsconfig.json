@@ -46,8 +46,10 @@
         "app/scripts/Swiper.Summary.ts",
         "app/scripts/Swiper.ts",
         "app/scripts/Swiper.View.ts",
+        "typings/fastclick/fastclick.d.ts",
         "typings/hammerjs/hammerjs.d.ts",
         "typings/jquery/jquery.d.ts",
+        "typings/lodash/lodash.d.ts",
         "typings/touch-events/touch-events.d.ts",
         "typings/tsd.d.ts"
     ]
