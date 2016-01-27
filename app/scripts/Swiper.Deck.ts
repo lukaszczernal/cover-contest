@@ -71,7 +71,7 @@ module Swiper {
         };
 
         activate() {
-          this.model.get();
+          if (this.pile.length === 0) this.model.get();
         }
 
         constructor(parent: JQuery, model: DeckModel, view: View) {

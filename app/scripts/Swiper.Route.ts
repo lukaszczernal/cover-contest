@@ -6,6 +6,13 @@ module Swiper {
     static states: any = {};
 
     static goto(name: string) {
+      let target = Route.get(name);
+      target.activate(); // todo deactivate previous state
+      this.statesElem.hide();
+      target.parent.show();
+    }
+
+    static get(name:string): Ctrl {
       let target = this.states[name];
 
       if (!target) {
@@ -14,11 +21,7 @@ module Swiper {
         this.states[name] = target;
       }
 
-      // todo deactivate previous state
-      target.activate();
-
-      this.statesElem.hide();
-      target.parent.show();
+      return target;
     }
 
     static init(moduleName: string) {

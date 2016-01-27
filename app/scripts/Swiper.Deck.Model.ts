@@ -11,7 +11,7 @@ module Swiper {
       total = 71; // todo last known count - how to calculate?
 
       get() {
-          $.ajax(this.source + this.randomOffset())
+          return $.ajax(this.source + this.randomOffset())
           .then(this.transform)
           .then(this.emit);
       }
@@ -25,7 +25,7 @@ module Swiper {
 
       transformImage(images) {
           var len: number = images.length;
-          while(--len) {
+          while(len--) {
             var img: any = images[len].format['a-iPad-DVD-x2'];
             if (img) {
               return img.source;
