@@ -1,21 +1,20 @@
 "use strict";
 var Swiper;
 (function (Swiper) {
-    var SubscriberPublisher = (function () {
-        function SubscriberPublisher() {
-            this.subscribers = {};
+    var Events = (function () {
+        function Events() {
         }
-        SubscriberPublisher.prototype.isEventRegistered = function (event) {
+        Events.isEventRegistered = function (event) {
             return !!this.subscribers[event];
         };
-        SubscriberPublisher.prototype.subscribe = function (event, callback) {
+        Events.subscribe = function (event, callback) {
             if (!this.subscribers[event]) {
                 this.subscribers[event] = [];
             }
             this.subscribers[event].push(callback);
         };
         ;
-        SubscriberPublisher.prototype.publish = function (event, data) {
+        Events.publish = function (event, data) {
             var _this = this;
             if (!this.isEventRegistered(event))
                 return false;
@@ -24,12 +23,41 @@ var Swiper;
             };
             this.subscribers[event].forEach(_sendSubscription);
         };
-        return SubscriberPublisher;
+        Events.TYPE = {
+            'RATE_START': 'onRATEstart',
+            'RATE_END': 'onRATEend',
+            'RATE': 'onRATE',
+            'GET': 'onGET',
+            'START': 'onSTART',
+            'END': 'onEND'
+        };
+        Events.subscribers = {};
+        return Events;
     })();
-    Swiper.SubscriberPublisher = SubscriberPublisher;
+    Swiper.Events = Events;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Events.ts" />
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Collection = (function () {
+        function Collection() {
+            var _this = this;
+            this.source = null;
+            this.collection = [];
+            this.total = 0;
+            this.emit = function () {
+                Swiper.Events.publish(Swiper.Events.TYPE.GET, _this.collection);
+            };
+        }
+        return Collection;
+    })();
+    Swiper.Collection = Collection;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Collection.ts" />
+/// <reference path="./Swiper.Card.Model.ts"/>
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -38,66 +66,19 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Swiper;
 (function (Swiper) {
-    var Collection = (function (_super) {
-        __extends(Collection, _super);
-        function Collection() {
-            var _this = this;
-            _super.call(this);
-            this.EVENTS = {
-                'GET': 'onGET'
-            };
-            this.source = null;
-            this.collection = [];
-            this.total = 0;
-            this.emit = function () {
-                _this.publish(_this.EVENTS.GET, _this.collection);
-            };
-        }
-        Collection.prototype.get = function () { };
-        return Collection;
-    })(Swiper.SubscriberPublisher);
-    Swiper.Collection = Collection;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./Swiper.Collection.ts" />
-/// <reference path="./Swiper.Events.ts" />
-"use strict";
-var Swiper;
-(function (Swiper) {
-    var Model = (function (_super) {
-        __extends(Model, _super);
-        function Model(data, model) {
-            _super.call(this);
-            this.data = data;
-            this.model = model;
-        }
-        Model.prototype.publish = function (event, data) {
-            _super.prototype.publish.call(this, event, data);
-            if (!!this.model)
-                this.model.publish(event, data); // Event proxy
-        };
-        return Model;
-    })(Swiper.SubscriberPublisher);
-    Swiper.Model = Model;
-})(Swiper || (Swiper = {}));
-/// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./Swiper.Collection.ts" />
-"use strict";
-var Swiper;
-(function (Swiper) {
     var DeckModel = (function (_super) {
         __extends(DeckModel, _super);
         function DeckModel() {
             var _this = this;
             _super.apply(this, arguments);
-            this.source = 'http://aws-xstream-api-testing.xstream.dk/media/videos?limit=10&no_series=true&offset=';
+            this.source = 'http://aws-xstream-api-production.xstream.dk/media/videos?limit=10&no_series=true&offset=';
             this.model = Swiper.CardModel;
             this.total = 71; // todo last known count - how to calculate?
             this.transform = function (data) {
                 var cards = [];
                 data.media.forEach(function (media) {
                     var card = _this.transformCard(media);
-                    cards.push(new _this.model(card, _this));
+                    cards.push(new Swiper.CardModel(card));
                 });
                 _this.total = data.count;
                 _this.collection = _.shuffle(cards);
@@ -137,24 +118,27 @@ var Swiper;
     Swiper.DeckModel = DeckModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Events.ts"/>
 /// <reference path="./Swiper.Deck.Model.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
-    var CardModel = (function (_super) {
-        __extends(CardModel, _super);
-        function CardModel(data, model) {
-            _super.call(this, data, model);
-            this.EVENTS = {
-                'RATE': 'onRATE'
-            };
+    var CardModel = (function () {
+        function CardModel(data) {
+            this.id = null;
+            this.src = null;
+            this.title = null;
+            this.isRated = false;
+            this.id = data.id;
+            this.src = data.src;
+            this.title = data.title;
         }
-        CardModel.prototype.rate = function (card, grade) {
-            this.publish(this.EVENTS.RATE);
+        CardModel.prototype.rate = function () {
+            this.isRated = true;
+            Swiper.Events.publish(Swiper.Events.TYPE.RATE);
         };
         return CardModel;
-    })(Swiper.Model);
+    })();
     Swiper.CardModel = CardModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -170,7 +154,8 @@ var Swiper;
             this.init();
         }
         Ctrl.prototype.render = function () {
-            this.elem = this.view.render(this.model.data);
+            var data = this.model;
+            this.elem = this.view.render(data);
         };
         Ctrl.prototype.draw = function () {
             this.parent.prepend(this.elem);
@@ -210,17 +195,35 @@ var Swiper;
     var Card = (function (_super) {
         __extends(Card, _super);
         function Card(parent, model, view) {
+            var _this = this;
             _super.call(this, parent, model, view);
             this.newTranslateX = 0;
             this.translateX = 0;
             this.rotate = 0;
+            this.animationOnFinishCallback = function () {
+                _this.elem.remove();
+                Swiper.Events.publish(Swiper.Events.TYPE.RATE_END);
+            };
         }
         Card.prototype.transform = function () {
             var transformations = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
-            this.elemImg.css('transform', transformations.join(' '));
+            if (this.model.isRated) {
+                var animationPromise = this.elemImg[0].animate([
+                    { transform: this.elemImg[0].style.transform },
+                    { transform: transformations.join(' ') }
+                ], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+                animationPromise.onfinish = this.animationOnFinishCallback;
+            }
+            else {
+                this.elemImg.css('transform', transformations.join(' '));
+            }
         };
         ;
         Card.prototype.setOverlay = function (direction, percentage) {
@@ -232,11 +235,9 @@ var Swiper;
         };
         Card.prototype.registerEvents = function () {
             var _this = this;
-            this.elemImg.on('transitionend', function () {
-                _this.updatePosition();
-            });
             this.hammerElem.on("panstart", function () {
                 _this.elemImg.removeClass('tween');
+                Swiper.Events.publish(Swiper.Events.TYPE.RATE_START);
             });
             this.hammerElem.on("panleft panright", function (evt) {
                 var degMax = 10;
@@ -259,13 +260,9 @@ var Swiper;
                 var direction = Math.sign(distance);
                 var velocity = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
                 if (Math.abs(distance) > apex) {
-                    // TODO we can subscribe to onRate event
                     _this.rotate = 30 * direction;
                     _this.translateX += (distance * velocity);
-                    _this.unRegisterEvents();
-                    _this.elemImg.addClass('m-rated');
-                    _this.elemTitle.addClass('m-rated');
-                    _this.model.rate(_this, 1);
+                    _this.rate();
                 }
                 else {
                     _this.rotate = 0;
@@ -276,6 +273,12 @@ var Swiper;
             });
         };
         ;
+        Card.prototype.rate = function () {
+            this.unRegisterEvents();
+            this.elemImg.addClass('m-rated');
+            this.elemTitle.addClass('m-rated');
+            this.model.rate();
+        };
         Card.prototype.unRegisterEvents = function () {
             this.hammerElem.destroy();
             // this.elemImg.unbind('transitionend'); @TODO to be considered
@@ -284,7 +287,7 @@ var Swiper;
             var _transformValue = this.elemImg.css('transform').split(',');
             if (_transformValue[0] !== 'none') {
                 this.translateX = parseInt(_transformValue[4], 10);
-                this.newTranslateX = this.translateX;
+                // this.newTranslateX = this.translateX;
                 this.rotate = 0;
             }
         };
@@ -331,6 +334,17 @@ var Swiper;
     Swiper.Config = Config;
 })(Swiper || (Swiper = {}));
 ;
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var Model = (function () {
+        function Model() {
+        }
+        return Model;
+    })();
+    Swiper.Model = Model;
+})(Swiper || (Swiper = {}));
+/// <reference path="./Swiper.Model.ts" />
 var Swiper;
 (function (Swiper) {
     var Route = (function () {
@@ -345,27 +359,27 @@ var Swiper;
         Route.get = function (name) {
             var target = this.states[name];
             if (!target) {
-                console.count(name + ' init');
                 target = this.init(name);
                 this.states[name] = target;
             }
             return target;
-        };
-        Route.init = function (moduleName) {
-            var moduleLowerCase = moduleName.toLowerCase();
-            var moduleCapital = this.toCapitalLetter(moduleLowerCase);
-            var moduleElem = '#' + moduleLowerCase;
-            var moduleModel = moduleCapital + 'Model';
-            var elem = $(moduleElem);
-            var model = new Swiper[moduleModel]();
-            var view = new Swiper.View(moduleName);
-            return new Swiper[moduleCapital](elem, model, view);
         };
         Route.toCapitalLetter = function (string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         };
         Route.statesElem = $('.state');
         Route.states = {};
+        Route.init = function (moduleName) {
+            console.count(moduleName + ' init');
+            var moduleLowerCase = moduleName.toLowerCase();
+            var moduleCapital = Route.toCapitalLetter(moduleLowerCase);
+            var moduleElem = '#' + moduleLowerCase;
+            var moduleModel = moduleCapital + 'Model';
+            var elem = $(moduleElem);
+            var model = (Swiper[moduleModel]) ? new Swiper[moduleModel]() : new Swiper.Model();
+            var view = new Swiper.View(moduleName);
+            return new Swiper[moduleCapital](elem, model, view);
+        };
         return Route;
     })();
     Swiper.Route = Route;
@@ -373,8 +387,8 @@ var Swiper;
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Card.ts" />
-/// <reference path="./Swiper.Model.ts" />
 /// <reference path="./Swiper.Route.ts" />
+/// <reference path="./Swiper.Events.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
@@ -384,26 +398,22 @@ var Swiper;
             _super.call(this, parent, model, view);
             this.pile = [];
             this.draw();
+            Swiper.Route.init('instructions');
         }
+        Deck.prototype.endGame = function () {
+            if (this.pile.length === 0)
+                Swiper.Route.goto('summary');
+        };
         Deck.prototype.removeFrontCard = function () {
-            var ratedCard;
-            var len;
-            ratedCard = Array.prototype.shift.call(this.pile);
-            len = this.pile.length;
-            ratedCard.elem.on('transitionend', function () {
-                ratedCard.elem.remove();
-                // @TODO this if should be handled differently ie. trigger end_rate event??
-                if (len === 0)
-                    Swiper.Route.goto('summary');
-            });
-            return len;
+            Array.prototype.shift.call(this.pile);
         };
         ;
         Deck.prototype.switchCard = function () {
             var i = 0;
             var len;
             var limit;
-            len = this.removeFrontCard();
+            this.removeFrontCard();
+            len = this.pile.length;
             limit = (len < 4) ? len : 4;
             // @TODO add method to Card class - move forward (and add register event there)
             while (i < limit) {
@@ -431,8 +441,9 @@ var Swiper;
         };
         Deck.prototype.subscribeEvents = function () {
             var _this = this;
-            this.model.subscribe('onRATE', function () { return _this.switchCard(); });
-            this.model.subscribe('onGET', function (res) { return _this.createCards(res); });
+            Swiper.Events.subscribe('onRATE', function () { return _this.switchCard(); });
+            Swiper.Events.subscribe('onGET', function (res) { return _this.createCards(res); });
+            Swiper.Events.subscribe('onRATEend', function () { _this.endGame(); });
         };
         Deck.prototype.init = function () {
             this.elemQueue = this.elem.find('.swiper-queue');
@@ -448,17 +459,14 @@ var Swiper;
     Swiper.Deck = Deck;
     ;
 })(Swiper || (Swiper = {}));
-/// <reference path="./Swiper.Model.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
-    var HomeModel = (function (_super) {
-        __extends(HomeModel, _super);
+    var HomeModel = (function () {
         function HomeModel() {
-            _super.apply(this, arguments);
         }
         return HomeModel;
-    })(Swiper.Model);
+    })();
     Swiper.HomeModel = HomeModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="./Swiper.Ctrl.ts" />
@@ -497,18 +505,51 @@ var Swiper;
     })(Swiper.Ctrl);
     Swiper.Home = Home;
 })(Swiper || (Swiper = {}));
-"use strict";
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.View.ts" />
+/// <reference path="./Swiper.Events.ts"/>
 "use strict";
 var Swiper;
 (function (Swiper) {
-    var SummaryModel = (function (_super) {
-        __extends(SummaryModel, _super);
+    var Instructions = (function (_super) {
+        __extends(Instructions, _super);
+        function Instructions(parent, model, view) {
+            _super.call(this, parent, model, view);
+            this.draw();
+        }
+        Instructions.prototype.hide = function () {
+            var _this = this;
+            var animationPromise = this.elem[0].animate([
+                { opacity: 1 }, { opacity: 0 }
+            ], {
+                duration: 300,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            animationPromise.onfinish = function () { _this.elem.remove(); };
+        };
+        Instructions.prototype.subscribeEvents = function () {
+            var _this = this;
+            Swiper.Events.subscribe('onRATEstart', function () { return _this.hide(); });
+        };
+        Instructions.prototype.init = function () {
+            this.subscribeEvents();
+        };
+        return Instructions;
+    })(Swiper.Ctrl);
+    Swiper.Instructions = Instructions;
+})(Swiper || (Swiper = {}));
+"use strict";
+"use strict";
+var Swiper;
+(function (Swiper) {
+    var SummaryModel = (function () {
         function SummaryModel() {
-            _super.apply(this, arguments);
         }
         return SummaryModel;
-    })(Swiper.Model);
+    })();
     Swiper.SummaryModel = SummaryModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="./Swiper.Ctrl.ts" />

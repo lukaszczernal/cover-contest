@@ -10,10 +10,13 @@ this["CC"]["templates"]["card"] = Handlebars.template({"compiler":[6,">= 2.0.0-b
     + "</span>\n</div>\n";
 },"useData":true});
 this["CC"]["templates"]["deck"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"swiper\">\n  <div class=\"swiper-queue\"></div>\n</div>\n";
+    return "<div class=\"swiper\">\n  <div class=\"swiper-queue\"></div>\n  <div id=\"instructions\"></div>\n</div>\n";
 },"useData":true});
 this["CC"]["templates"]["home"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<section class=\"home\">\n\n  <div class=\"home-title\">\n    <h1 class=\"home-titleText\">Cover</h1>\n    <h2 class=\"home-titleText m-subtitle\">Extravaganza</h2>\n    <div class=\"home-poweredby\">\n      <span class=\"home-poweredbyLabel\">Powered by</span>\n      <img class=\"home-poweredbyLogo\" src=\"images/mmlogo.svg\"/>\n    </div>\n  </div>\n\n  <div class=\"home-instructions\">\n    <span class=\"home-instructionsText\">Judge the covers.</span>\n    <span class=\"home-instructionsText\">Swipe left or right.</span>\n  </div>\n  <div class=\"home-start\">\n    <a class=\"btn\">Start</a>\n  </div>\n\n</section>\n";
+    return "<section class=\"home\">\n\n  <div class=\"home-title\">\n    <h1 class=\"home-titleText\">Cover</h1>\n    <h2 class=\"home-titleText m-subtitle\">Extravaganza</h2>\n    <div class=\"home-poweredby\">\n      <span class=\"home-poweredbyLabel\">Powered by</span>\n      <img class=\"home-poweredbyLogo\" src=\"images/mmlogo.svg\"/>\n    </div>\n  </div>\n\n  <div class=\"home-instructions\">\n    <span class=\"home-instructionsText\">Judge the covers.</span>\n    <span class=\"home-instructionsText\">Swipe left or right.</span>\n  </div>\n\n  <div class=\"home-start\">\n    <a class=\"btn\">Start</a>\n  </div>\n\n</section>\n";
+},"useData":true});
+this["CC"]["templates"]["instructions"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"instructions m-center\">\n  <div class=\"instructions-swipeArrow\">\n    <div class=\"instructions-swipeArrowImgParent\">\n      <div class=\"instructions-swipeArrowImgChild\">\n        <img class=\"instructions-swipeArrowImg\" src=\"images/arrows.svg\"/>\n      </div>\n    </div>\n  </div>\n  <div class=\"instructions-swipeLabels\">\n    <div class=\"home-swipeLabel m-negative\">Nah!</div>\n    <div class=\"home-swipeLabel m-positive\">Yea!</div>\n  </div>\n</div>\n";
 },"useData":true});
 this["CC"]["templates"]["summary"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"summary\">\n  <h1 class=\"summary-title\">Summary</h1>\n  <a class=\"summary-goToDeck btn\">Again</a>\n  <br/>\n  <br/>\n  <a class=\"summary-goToHome btn\">Home</a>\n</div>\n";
