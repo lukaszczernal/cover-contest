@@ -15,10 +15,10 @@ module Swiper {
         translateX: number = 0;
         rotate: number = 0;
 
-        animationOnFinishCallback = () => {
-            this.elem.remove();
-            Events.publish(Events.TYPE.RATE_END);
-        }
+        // animationOnFinishCallback = () => {
+        //     this.elem.remove();
+        //     Events.publish(Events.TYPE.RATE_END);
+        // }
 
         transform() {
             var transformations: string[] = [];
@@ -26,22 +26,22 @@ module Swiper {
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
 
-            if (this.model.isRated) {
-
-                let animationPromise = this.elemImg[0].animate([
-                    {transform: this.elemImg[0].style.transform},
-                    {transform: transformations.join(' ')}
-                ],{
-                    duration: 300,
-                    easing: 'ease-out',
-                    fill: 'forwards'
-                });
-
-                animationPromise.onfinish = this.animationOnFinishCallback;
-
-            } else {
-                this.elemImg.css('transform', transformations.join(' '));
-            }
+            // if (this.model.isRated) {
+            //
+            //     let animationPromise = this.elemImg[0].animate([
+            //         {transform: this.elemImg[0].style.transform},
+            //         {transform: transformations.join(' ')}
+            //     ],{
+            //         duration: 300,
+            //         easing: 'ease-out',
+            //         fill: 'forwards'
+            //     });
+            //
+            //     animationPromise.onfinish = this.animationOnFinishCallback;
+            //
+            // } else {
+            this.elemImg.css('transform', transformations.join(' '));
+            // }
         };
 
         setOverlay(direction, percentage) {
@@ -55,6 +55,11 @@ module Swiper {
         }
 
         registerEvents() {
+
+            this.elemImg.on('transitionend', () => {
+                // this.elem.remove();
+                // Events.publish(Events.TYPE.RATE_END);
+            });
 
             this.hammerElem.on("panstart", () => {
                 this.elemImg.removeClass('tween');
@@ -99,11 +104,20 @@ module Swiper {
             });
         };
 
+        private onRateEnd() {
+            this.elemTitle.addClass('m-rated');
+            this.elemImg
+              .addClass('m-rated')
+              .one('transitionend', () => {
+                  this.elem.remove();
+                  Events.publish(Events.TYPE.RATE_END);
+              });
+        }
+
         private rate() {
-          this.unRegisterEvents();
-          this.elemImg.addClass('m-rated');
-          this.elemTitle.addClass('m-rated');
-          this.model.rate()
+            this.unRegisterEvents();
+            this.model.rate();
+            this.onRateEnd();
         }
 
         unRegisterEvents() {
@@ -115,7 +129,6 @@ module Swiper {
             var _transformValue:string[] = this.elemImg.css('transform').split(',')
             if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
                 this.translateX = parseInt(_transformValue[4], 10);
-                // this.newTranslateX = this.translateX;
                 this.rotate = 0;
             }
         };

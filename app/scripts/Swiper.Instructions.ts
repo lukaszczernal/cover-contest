@@ -12,15 +12,9 @@ module Swiper {
     hammerElem: HammerManager;
 
     hide() {
-      let animationPromise = this.elem[0].animate([
-        {opacity:1}, {opacity: 0}
-      ],{
-          duration: 300,
-          easing: 'ease-out',
-          fill: 'forwards'
+      this.elem.fadeOut(300, () => {
+          this.elem.remove();
       });
-
-      animationPromise.onfinish = () => { this.elem.remove() };
     }
 
     subscribeEvents() {
