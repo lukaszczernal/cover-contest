@@ -1,22 +1,26 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./Swiper.Model.ts" />
+/// <reference path="./Swiper.Events.ts"/>
 /// <reference path="./Swiper.Deck.Model.ts" />
 
 "use strict"
 
 module Swiper {
 
-  export class CardModel extends Model {
-      EVENTS: any = {
-          'RATE': 'onRATE'
-      };
-      rate(card: CardResponse, grade: number) {
-          this.publish(this.EVENTS.RATE);
-      }
+    export class CardModel {
+        id:number = null;
+        src:string = null;
+        title: string = null;
+        isRated: boolean = false;
 
-      constructor(data: CardResponse, model: Swiper.DeckModel) {
-          super(data, model)
-      }
-  }
+        rate() {
+          this.isRated = true;
+          Events.publish(Events.TYPE.RATE);
+        }
 
+        constructor(data: CardResponse) {
+          this.id = data.id;
+          this.src = data.src;
+          this.title = data.title;
+        }
+    }
 }

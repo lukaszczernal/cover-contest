@@ -39,6 +39,7 @@
         "app/scripts/Swiper.Events.ts",
         "app/scripts/Swiper.Home.Model.ts",
         "app/scripts/Swiper.Home.ts",
+        "app/scripts/Swiper.Instructions.ts",
         "app/scripts/Swiper.Interface.ts",
         "app/scripts/Swiper.Model.ts",
         "app/scripts/Swiper.Route.ts",

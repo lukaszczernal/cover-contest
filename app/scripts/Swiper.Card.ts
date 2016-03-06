@@ -15,12 +15,33 @@ module Swiper {
         translateX: number = 0;
         rotate: number = 0;
 
+        animationOnFinishCallback = () => {
+            this.elem.remove();
+            Events.publish(Events.TYPE.RATE_END);
+        }
+
         transform() {
             var transformations: string[] = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
-            this.elemImg.css('transform', transformations.join(' '));
+
+            if (this.model.isRated) {
+
+                let animationPromise = this.elemImg[0].animate([
+                    {transform: this.elemImg[0].style.transform},
+                    {transform: transformations.join(' ')}
+                ],{
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+
+                animationPromise.onfinish = this.animationOnFinishCallback;
+
+            } else {
+                this.elemImg.css('transform', transformations.join(' '));
+            }
         };
 
         setOverlay(direction, percentage) {
@@ -34,12 +55,10 @@ module Swiper {
         }
 
         registerEvents() {
-            this.elemImg.on('transitionend', () => {
-                this.updatePosition();
-            });
 
             this.hammerElem.on("panstart", () => {
                 this.elemImg.removeClass('tween');
+                Events.publish(Events.TYPE.RATE_START);
             });
 
             this.hammerElem.on("panleft panright", (evt: HammerInput) => {
@@ -68,13 +87,9 @@ module Swiper {
                 var velocity:number = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
 
                 if (Math.abs(distance) > apex) {
-                    // TODO we can subscribe to onRate event
                     this.rotate = 30 * direction;
                     this.translateX += (distance * velocity);
-                    this.unRegisterEvents();
-                    this.elemImg.addClass('m-rated');
-                    this.elemTitle.addClass('m-rated');
-                    this.model.rate(this, 1);
+                    this.rate();
                 } else {
                     this.rotate = 0;
                 }
@@ -83,6 +98,13 @@ module Swiper {
                 this.setOverlay(0, 0);
             });
         };
+
+        private rate() {
+          this.unRegisterEvents();
+          this.elemImg.addClass('m-rated');
+          this.elemTitle.addClass('m-rated');
+          this.model.rate()
+        }
 
         unRegisterEvents() {
             this.hammerElem.destroy();
@@ -93,7 +115,7 @@ module Swiper {
             var _transformValue:string[] = this.elemImg.css('transform').split(',')
             if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
                 this.translateX = parseInt(_transformValue[4], 10);
-                this.newTranslateX = this.translateX;
+                // this.newTranslateX = this.translateX;
                 this.rotate = 0;
             }
         };
@@ -114,7 +136,7 @@ module Swiper {
             this.elemOverlay = this.elem.find('.card-imgOverlay');
         };
 
-        constructor(parent:JQuery, model:Swiper.Model, view:View) {
+        constructor(parent:JQuery, model: CardModel, view:View) {
             super(parent, model, view);
         };
     };

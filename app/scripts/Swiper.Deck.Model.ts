@@ -1,12 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Collection.ts" />
+/// <reference path="./Swiper.Card.Model.ts"/>
 
 "use strict"
 
 module Swiper {
 
   export class DeckModel extends Collection {
-      source = 'http://aws-xstream-api-testing.xstream.dk/media/videos?limit=10&no_series=true&offset=';
+      source = 'http://aws-xstream-api-production.xstream.dk/media/videos?limit=10&no_series=true&offset=';
       model = CardModel;
       total = 71; // todo last known count - how to calculate?
 
@@ -34,7 +35,7 @@ module Swiper {
           return 'images/no-image.jpg';
       }
 
-      transformCard(card: any) {
+      transformCard(card: any): CardResponse {
           return {
             id: card.id,
             src: this.transformImage(card.images),
@@ -45,10 +46,9 @@ module Swiper {
       transform = (data: any)  => {
           var cards: CardModel[] = [];
           data.media.forEach((media: any) => {
-              var card: any = this.transformCard(media);
-              cards.push(new this.model(card, this));
+              var card: CardResponse = this.transformCard(media);
+              cards.push(new CardModel(card));
           });
-
           this.total = data.count;
           this.collection = _.shuffle(cards);
       }

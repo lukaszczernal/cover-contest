@@ -1,8 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Ctrl.ts" />
 /// <reference path="./Swiper.Card.ts" />
-/// <reference path="./Swiper.Model.ts" />
 /// <reference path="./Swiper.Route.ts" />
+/// <reference path="./Swiper.Events.ts" />
 
 "use strict"
 
@@ -12,18 +12,13 @@ module Swiper {
         elemQueue: JQuery;
         pile: Array<Card> = [];
 
-        removeFrontCard(): number {
-            var ratedCard: Card;
-            var len: number;
-            ratedCard = Array.prototype.shift.call(this.pile);
-            len = this.pile.length;
-            ratedCard.elem.on('transitionend', function() {
-                ratedCard.elem.remove();
-                // @TODO this if should be handled differently ie. trigger end_rate event??
-                if (len === 0)
-                  Route.goto('summary');
-            });
-            return len;
+        endGame() {
+          if (this.pile.length === 0)
+            Route.goto('summary');
+        }
+
+        removeFrontCard() {
+            Array.prototype.shift.call(this.pile);
         };
 
         switchCard() {
@@ -31,7 +26,8 @@ module Swiper {
             var len: number;
             var limit: number;
 
-            len = this.removeFrontCard();
+            this.removeFrontCard();
+            len = this.pile.length;
             limit = (len < 4) ? len : 4;
 
             // @TODO add method to Card class - move forward (and add register event there)
@@ -61,8 +57,9 @@ module Swiper {
         }
 
         subscribeEvents() {
-            this.model.subscribe('onRATE', () => this.switchCard());
-            this.model.subscribe('onGET', (res: Array<CardModel>) => this.createCards(res));
+            Events.subscribe('onRATE', () => this.switchCard());
+            Events.subscribe('onGET', (res: Array<CardModel>) => this.createCards(res));
+            Events.subscribe('onRATEend', () => { this.endGame() });
         }
 
         init() {
@@ -77,6 +74,7 @@ module Swiper {
         constructor(parent: JQuery, model: DeckModel, view: View) {
             super(parent, model, view);
             this.draw();
+            Route.init('instructions');
         }
     };
 }

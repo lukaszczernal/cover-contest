@@ -1,3 +1,5 @@
+/// <reference path="./Swiper.Model.ts" />
+
 module Swiper {
 
   export class Route {
@@ -16,7 +18,6 @@ module Swiper {
       let target = this.states[name];
 
       if (!target) {
-        console.count(name+' init');
         target = this.init(name);
         this.states[name] = target;
       }
@@ -24,14 +25,15 @@ module Swiper {
       return target;
     }
 
-    static init(moduleName: string) {
+    static init = (moduleName: string) => {
+      console.count(moduleName+' init');
       let moduleLowerCase: string = moduleName.toLowerCase();
-      let moduleCapital: string   = this.toCapitalLetter(moduleLowerCase);
+      let moduleCapital: string   = Route.toCapitalLetter(moduleLowerCase);
       let moduleElem: string  = '#' + moduleLowerCase;
       let moduleModel: string = moduleCapital + 'Model';
 
       let elem = $(moduleElem);
-      let model = new Swiper[moduleModel]();
+      let model = (Swiper[moduleModel])? new Swiper[moduleModel]() : new Model();
       let view = new Swiper.View(moduleName);
 
       return new Swiper[moduleCapital](elem, model, view);

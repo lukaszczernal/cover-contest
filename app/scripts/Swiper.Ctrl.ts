@@ -9,7 +9,8 @@ module Swiper {
         elem: JQuery;
 
         render() {
-            this.elem = this.view.render(this.model.data);
+            var data = this.model;
+            this.elem = this.view.render(data);
         }
 
         draw() {
