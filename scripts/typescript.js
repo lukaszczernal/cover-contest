@@ -195,35 +195,36 @@ var Swiper;
     var Card = (function (_super) {
         __extends(Card, _super);
         function Card(parent, model, view) {
-            var _this = this;
             _super.call(this, parent, model, view);
             this.newTranslateX = 0;
             this.translateX = 0;
             this.rotate = 0;
-            this.animationOnFinishCallback = function () {
-                _this.elem.remove();
-                Swiper.Events.publish(Swiper.Events.TYPE.RATE_END);
-            };
         }
+        // animationOnFinishCallback = () => {
+        //     this.elem.remove();
+        //     Events.publish(Events.TYPE.RATE_END);
+        // }
         Card.prototype.transform = function () {
             var transformations = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
-            if (this.model.isRated) {
-                var animationPromise = this.elemImg[0].animate([
-                    { transform: this.elemImg[0].style.transform },
-                    { transform: transformations.join(' ') }
-                ], {
-                    duration: 300,
-                    easing: 'ease-out',
-                    fill: 'forwards'
-                });
-                animationPromise.onfinish = this.animationOnFinishCallback;
-            }
-            else {
-                this.elemImg.css('transform', transformations.join(' '));
-            }
+            // if (this.model.isRated) {
+            //
+            //     let animationPromise = this.elemImg[0].animate([
+            //         {transform: this.elemImg[0].style.transform},
+            //         {transform: transformations.join(' ')}
+            //     ],{
+            //         duration: 300,
+            //         easing: 'ease-out',
+            //         fill: 'forwards'
+            //     });
+            //
+            //     animationPromise.onfinish = this.animationOnFinishCallback;
+            //
+            // } else {
+            this.elemImg.css('transform', transformations.join(' '));
+            // }
         };
         ;
         Card.prototype.setOverlay = function (direction, percentage) {
@@ -235,6 +236,10 @@ var Swiper;
         };
         Card.prototype.registerEvents = function () {
             var _this = this;
+            this.elemImg.on('transitionend', function () {
+                // this.elem.remove();
+                // Events.publish(Events.TYPE.RATE_END);
+            });
             this.hammerElem.on("panstart", function () {
                 _this.elemImg.removeClass('tween');
                 Swiper.Events.publish(Swiper.Events.TYPE.RATE_START);
@@ -273,11 +278,20 @@ var Swiper;
             });
         };
         ;
+        Card.prototype.onRateEnd = function () {
+            var _this = this;
+            this.elemTitle.addClass('m-rated');
+            this.elemImg
+                .addClass('m-rated')
+                .one('transitionend', function () {
+                _this.elem.remove();
+                Swiper.Events.publish(Swiper.Events.TYPE.RATE_END);
+            });
+        };
         Card.prototype.rate = function () {
             this.unRegisterEvents();
-            this.elemImg.addClass('m-rated');
-            this.elemTitle.addClass('m-rated');
             this.model.rate();
+            this.onRateEnd();
         };
         Card.prototype.unRegisterEvents = function () {
             this.hammerElem.destroy();
@@ -287,7 +301,6 @@ var Swiper;
             var _transformValue = this.elemImg.css('transform').split(',');
             if (_transformValue[0] !== 'none') {
                 this.translateX = parseInt(_transformValue[4], 10);
-                // this.newTranslateX = this.translateX;
                 this.rotate = 0;
             }
         };
@@ -521,14 +534,9 @@ var Swiper;
         }
         Instructions.prototype.hide = function () {
             var _this = this;
-            var animationPromise = this.elem[0].animate([
-                { opacity: 1 }, { opacity: 0 }
-            ], {
-                duration: 300,
-                easing: 'ease-out',
-                fill: 'forwards'
+            this.elem.fadeOut(300, function () {
+                _this.elem.remove();
             });
-            animationPromise.onfinish = function () { _this.elem.remove(); };
         };
         Instructions.prototype.subscribeEvents = function () {
             var _this = this;
