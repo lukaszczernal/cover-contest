@@ -13,7 +13,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-stylus": "^2.0.2",
-    "gulp-typescript": "^2.7.5",
+    "gulp-typescript": "^2.13.3",
     "gulp-wrap": "^0.11.0"
   },
   "dependencies": {

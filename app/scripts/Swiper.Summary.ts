@@ -1,6 +1,3 @@
-/// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Route.ts" />
-
 "use strict"
 
 module Swiper {
@@ -22,12 +19,22 @@ module Swiper {
       this.elemGoToHome.click(this.goToHome);
     }
 
-    init() {
-      this.draw();
-      this.elemGoToDeck = this.parent.find('.summary-goToDeck');
-      this.elemGoToHome = this.parent.find('.summary-goToHome');
-      this.subscribeEvents();
-    };
+    draw() {
+        this.parent.empty();
+        super.draw();
+    }
+
+    //TODO find out a way not to re-attache events
+    activate() {
+        this.model.update();
+        this.render();
+        this.draw();
+        this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');;
+        this.elemGoToHome = this.parent.find('.summary-controlsBtn.goToHome');
+        this.subscribeEvents();
+    }
+
+    init() {};
 
   }
 

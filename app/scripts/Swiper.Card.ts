@@ -86,15 +86,15 @@ module Swiper {
 
             this.hammerElem.on("panend", (evt: HammerInput) => {
                 this.elemImg.addClass('tween');
-                var apex:number = 70;
-                var distance:number = this.newTranslateX - this.translateX;
-                var direction:number = Math.sign(distance);
-                var velocity:number = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
+                let apex:number = 70;
+                let distance:number = this.newTranslateX - this.translateX;
+                let direction:number = Math.sign(distance);
+                let velocity:number = Math.abs(evt.velocity) < 3 ? 3 : Math.abs(evt.velocity);
 
                 if (Math.abs(distance) > apex) {
                     this.rotate = 30 * direction;
                     this.translateX += (distance * velocity);
-                    this.rate();
+                    this.rate(direction);
                 } else {
                     this.rotate = 0;
                 }
@@ -114,9 +114,9 @@ module Swiper {
               });
         }
 
-        private rate() {
+        private rate(direction:number) {
             this.unRegisterEvents();
-            this.model.rate();
+            this.model.rate(direction);
             this.onRateEnd();
         }
 

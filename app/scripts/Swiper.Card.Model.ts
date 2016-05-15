@@ -9,15 +9,18 @@ module Swiper {
     export class CardModel {
         id:number = null;
         src:string = null;
-        title: string = null;
-        isRated: boolean = false;
+        title:string = null;
+        rating:number = null;
+        isRated:boolean = false;
 
-        rate() {
+        rate(direction:number) {
           this.isRated = true;
+          console.log('direction',direction);
+          this.rating = direction;
           Events.publish(Events.TYPE.RATE);
         }
 
-        constructor(data: CardResponse) {
+        constructor(data:CardResponse) {
           this.id = data.id;
           this.src = data.src;
           this.title = data.title;

@@ -57,9 +57,9 @@ module Swiper {
         }
 
         subscribeEvents() {
-            Events.subscribe('onRATE', () => this.switchCard());
-            Events.subscribe('onGET', (res: Array<CardModel>) => this.createCards(res));
-            Events.subscribe('onRATEend', () => { this.endGame() });
+            Events.subscribe(Events.TYPE.RATE, () => this.switchCard());
+            Events.subscribe(Events.TYPE.GET, (res: Array<CardModel>) => this.createCards(res));
+            Events.subscribe(Events.TYPE.RATE_END, () => { this.endGame() });
         }
 
         init() {

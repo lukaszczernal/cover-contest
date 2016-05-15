@@ -5,13 +5,21 @@
 
 module Swiper {
 
-  export class Collection {
-        source: string = null;
+    export interface ICollection {
         model: any;
-        collection: Model[] = [];
-        total: number = 0;
+        collection: Model[];
+        total: number;
+        size: number;
+        emit: any;
+    }
+
+    export class Collection implements ICollection {
+        model = null;
+        collection = [];
+        total = 0;
+        size = 10;
         emit = () => {
-          Events.publish(Events.TYPE.GET, this.collection);
+            Events.publish(Events.TYPE.GET, this.collection);
         }
     }
 }

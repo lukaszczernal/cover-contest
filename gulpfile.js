@@ -112,4 +112,4 @@ gulp.task('watch', function() {
 });
 
 gulp.task('build', ['indexTemplate', 'templates', 'bower', 'scripts', 'styles', 'assets'], browserSync.reload);
-gulp.task('server', ['browserSync','build','watch']);
+gulp.task('serve', ['browserSync','build','watch']);

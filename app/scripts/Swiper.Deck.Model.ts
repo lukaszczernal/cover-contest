@@ -7,20 +7,23 @@
 module Swiper {
 
   export class DeckModel extends Collection {
-      source = 'http://aws-xstream-api-production.xstream.dk/media/videos?limit=10&no_series=true&offset=';
-      model = CardModel;
-      total = 71; // todo last known count - how to calculate?
+      model:CardModel;
+      total:number = 64; // todo last known count - how to calculate?
+      size:number = 3;
+
+      source():string {
+          return `http://aws-xstream-api-production.xstream.dk/media/videos?limit=${this.size}&no_series=true&offset=${this.randomOffset()}`
+      };
 
       get() {
-          return $.ajax(this.source + this.randomOffset())
+          return $.ajax(this.source())
           .then(this.transform)
           .then(this.emit);
       }
 
       randomOffset() {
-          var limit = 10; // todo this should come from config - related to deal settings
-          var pages = Math.floor(this.total / limit);
-          var rand = Math.floor(Math.random() * pages) * limit;
+          let pages = Math.floor(this.total / this.size);
+          let rand = Math.floor(Math.random() * pages) * this.size;
           return rand;
       }
 
