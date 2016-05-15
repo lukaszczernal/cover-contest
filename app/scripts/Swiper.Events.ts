@@ -4,8 +4,8 @@ module Swiper {
 
   export class Events {
       static TYPE = {
-          'RATE_START': 'onRATEstart'
-          'RATE_END': 'onRATEend'
+          'RATE_START': 'onRATEstart',
+          'RATE_END': 'onRATEend',
           'RATE': 'onRATE',
           'GET': 'onGET',
           'START': 'onSTART',

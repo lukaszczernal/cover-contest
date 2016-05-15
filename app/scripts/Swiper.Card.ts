@@ -44,7 +44,7 @@ module Swiper {
             // }
         };
 
-        setOverlay(direction, percentage) {
+        setOverlay(direction:number, percentag:number) {
             var color: string;
 
             percentage = percentage * 0.2
