@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 "use strict";
 var Swiper;
 (function (Swiper) {
@@ -33,7 +38,7 @@ var Swiper;
         };
         Events.subscribers = {};
         return Events;
-    })();
+    }());
     Swiper.Events = Events;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -44,26 +49,22 @@ var Swiper;
     var Collection = (function () {
         function Collection() {
             var _this = this;
-            this.source = null;
+            this.model = null;
             this.collection = [];
             this.total = 0;
+            this.size = 10;
             this.emit = function () {
                 Swiper.Events.publish(Swiper.Events.TYPE.GET, _this.collection);
             };
         }
         return Collection;
-    })();
+    }());
     Swiper.Collection = Collection;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Collection.ts" />
 /// <reference path="./Swiper.Card.Model.ts"/>
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Swiper;
 (function (Swiper) {
     var DeckModel = (function (_super) {
@@ -71,9 +72,8 @@ var Swiper;
         function DeckModel() {
             var _this = this;
             _super.apply(this, arguments);
-            this.source = 'http://aws-xstream-api-production.xstream.dk/media/videos?limit=10&no_series=true&offset=';
-            this.model = Swiper.CardModel;
-            this.total = 71; // todo last known count - how to calculate?
+            this.total = 64; // todo last known count - how to calculate?
+            this.size = 3;
             this.transform = function (data) {
                 var cards = [];
                 data.media.forEach(function (media) {
@@ -84,15 +84,18 @@ var Swiper;
                 _this.collection = _.shuffle(cards);
             };
         }
+        DeckModel.prototype.source = function () {
+            return "http://aws-xstream-api-production.xstream.dk/media/videos?limit=" + this.size + "&no_series=true&offset=" + this.randomOffset();
+        };
+        ;
         DeckModel.prototype.get = function () {
-            return $.ajax(this.source + this.randomOffset())
+            return $.ajax(this.source())
                 .then(this.transform)
                 .then(this.emit);
         };
         DeckModel.prototype.randomOffset = function () {
-            var limit = 10; // todo this should come from config - related to deal settings
-            var pages = Math.floor(this.total / limit);
-            var rand = Math.floor(Math.random() * pages) * limit;
+            var pages = Math.floor(this.total / this.size);
+            var rand = Math.floor(Math.random() * pages) * this.size;
             return rand;
         };
         DeckModel.prototype.transformImage = function (images) {
@@ -114,7 +117,7 @@ var Swiper;
             };
         };
         return DeckModel;
-    })(Swiper.Collection);
+    }(Swiper.Collection));
     Swiper.DeckModel = DeckModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -128,17 +131,20 @@ var Swiper;
             this.id = null;
             this.src = null;
             this.title = null;
+            this.rating = null;
             this.isRated = false;
             this.id = data.id;
             this.src = data.src;
             this.title = data.title;
         }
-        CardModel.prototype.rate = function () {
+        CardModel.prototype.rate = function (direction) {
             this.isRated = true;
+            console.log('direction', direction);
+            this.rating = direction;
             Swiper.Events.publish(Swiper.Events.TYPE.RATE);
         };
         return CardModel;
-    })();
+    }());
     Swiper.CardModel = CardModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -165,7 +171,7 @@ var Swiper;
         Ctrl.prototype.activate = function () {
         };
         return Ctrl;
-    })();
+    }());
     Swiper.Ctrl = Ctrl;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -182,7 +188,7 @@ var Swiper;
             return elem;
         };
         return View;
-    })();
+    }());
     Swiper.View = View;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -227,7 +233,7 @@ var Swiper;
             // }
         };
         ;
-        Card.prototype.setOverlay = function (direction, percentage) {
+        Card.prototype.setOverlay = function (direction, percentag) {
             var color;
             percentage = percentage * 0.2;
             color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
@@ -267,7 +273,7 @@ var Swiper;
                 if (Math.abs(distance) > apex) {
                     _this.rotate = 30 * direction;
                     _this.translateX += (distance * velocity);
-                    _this.rate();
+                    _this.rate(direction);
                 }
                 else {
                     _this.rotate = 0;
@@ -288,9 +294,9 @@ var Swiper;
                 Swiper.Events.publish(Swiper.Events.TYPE.RATE_END);
             });
         };
-        Card.prototype.rate = function () {
+        Card.prototype.rate = function (direction) {
             this.unRegisterEvents();
-            this.model.rate();
+            this.model.rate(direction);
             this.onRateEnd();
         };
         Card.prototype.unRegisterEvents = function () {
@@ -323,7 +329,7 @@ var Swiper;
         ;
         ;
         return Card;
-    })(Swiper.Ctrl);
+    }(Swiper.Ctrl));
     Swiper.Card = Card;
     ;
 })(Swiper || (Swiper = {}));
@@ -343,7 +349,7 @@ var Swiper;
             });
         };
         return Config;
-    })();
+    }());
     Swiper.Config = Config;
 })(Swiper || (Swiper = {}));
 ;
@@ -354,7 +360,7 @@ var Swiper;
         function Model() {
         }
         return Model;
-    })();
+    }());
     Swiper.Model = Model;
 })(Swiper || (Swiper = {}));
 /// <reference path="./Swiper.Model.ts" />
@@ -394,7 +400,7 @@ var Swiper;
             return new Swiper[moduleCapital](elem, model, view);
         };
         return Route;
-    })();
+    }());
     Swiper.Route = Route;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -454,9 +460,9 @@ var Swiper;
         };
         Deck.prototype.subscribeEvents = function () {
             var _this = this;
-            Swiper.Events.subscribe('onRATE', function () { return _this.switchCard(); });
-            Swiper.Events.subscribe('onGET', function (res) { return _this.createCards(res); });
-            Swiper.Events.subscribe('onRATEend', function () { _this.endGame(); });
+            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE, function () { return _this.switchCard(); });
+            Swiper.Events.subscribe(Swiper.Events.TYPE.GET, function (res) { return _this.createCards(res); });
+            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE_END, function () { _this.endGame(); });
         };
         Deck.prototype.init = function () {
             this.elemQueue = this.elem.find('.swiper-queue');
@@ -468,7 +474,7 @@ var Swiper;
                 this.model.get();
         };
         return Deck;
-    })(Swiper.Ctrl);
+    }(Swiper.Ctrl));
     Swiper.Deck = Deck;
     ;
 })(Swiper || (Swiper = {}));
@@ -479,7 +485,7 @@ var Swiper;
         function HomeModel() {
         }
         return HomeModel;
-    })();
+    }());
     Swiper.HomeModel = HomeModel;
 })(Swiper || (Swiper = {}));
 /// <reference path="./Swiper.Ctrl.ts" />
@@ -515,7 +521,7 @@ var Swiper;
             this.loadFirstDeal();
         };
         return Home;
-    })(Swiper.Ctrl);
+    }(Swiper.Ctrl));
     Swiper.Home = Home;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
@@ -546,22 +552,25 @@ var Swiper;
             this.subscribeEvents();
         };
         return Instructions;
-    })(Swiper.Ctrl);
+    }(Swiper.Ctrl));
     Swiper.Instructions = Instructions;
 })(Swiper || (Swiper = {}));
 "use strict";
 "use strict";
 var Swiper;
 (function (Swiper) {
-    var SummaryModel = (function () {
+    var SummaryModel = (function (_super) {
+        __extends(SummaryModel, _super);
         function SummaryModel() {
+            _super.apply(this, arguments);
         }
+        SummaryModel.prototype.update = function () {
+            this.collection = Swiper.Route.get('deck').model.collection; // gets collection from last game
+        };
         return SummaryModel;
-    })();
+    }(Swiper.Collection));
     Swiper.SummaryModel = SummaryModel;
 })(Swiper || (Swiper = {}));
-/// <reference path="./Swiper.Ctrl.ts" />
-/// <reference path="./Swiper.Route.ts" />
 "use strict";
 var Swiper;
 (function (Swiper) {
@@ -580,15 +589,24 @@ var Swiper;
             this.elemGoToDeck.click(this.goToDeck);
             this.elemGoToHome.click(this.goToHome);
         };
-        Summary.prototype.init = function () {
+        Summary.prototype.draw = function () {
+            this.parent.empty();
+            _super.prototype.draw.call(this);
+        };
+        //TODO find out a way not to re-attache events
+        Summary.prototype.activate = function () {
+            this.model.update();
+            this.render();
             this.draw();
-            this.elemGoToDeck = this.parent.find('.summary-goToDeck');
-            this.elemGoToHome = this.parent.find('.summary-goToHome');
+            this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');
+            ;
+            this.elemGoToHome = this.parent.find('.summary-controlsBtn.goToHome');
             this.subscribeEvents();
         };
+        Summary.prototype.init = function () { };
         ;
         return Summary;
-    })(Swiper.Ctrl);
+    }(Swiper.Ctrl));
     Swiper.Summary = Summary;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
