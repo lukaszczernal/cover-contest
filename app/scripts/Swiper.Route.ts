@@ -9,7 +9,7 @@ module Swiper {
 
     static goto(name: string) {
       let target = Route.get(name);
-      target.activate(); // todo deactivate previous state
+      target.activate();
       this.statesElem.hide();
       target.parent.show();
     }

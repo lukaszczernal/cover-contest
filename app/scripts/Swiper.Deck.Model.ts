@@ -9,10 +9,10 @@ module Swiper {
   export class DeckModel extends Collection {
       model:CardModel;
       total:number = 64; // todo last known count - how to calculate?
-      size:number = 3;
+      count:number = 10;
 
       source():string {
-          return `http://aws-xstream-api-production.xstream.dk/media/videos?limit=${this.size}&no_series=true&offset=${this.randomOffset()}`
+          return `http://aws-xstream-api-production.xstream.dk/media/videos?limit=${this.count}&no_series=true&offset=${this.randomOffset()}`
       };
 
       get() {
@@ -22,8 +22,8 @@ module Swiper {
       }
 
       randomOffset() {
-          let pages = Math.floor(this.total / this.size);
-          let rand = Math.floor(Math.random() * pages) * this.size;
+          let pages = Math.floor(this.total / this.count);
+          let rand = Math.floor(Math.random() * pages) * this.count;
           return rand;
       }
 

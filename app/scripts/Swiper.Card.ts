@@ -14,40 +14,20 @@ module Swiper {
         newTranslateX: number = 0;
         translateX: number = 0;
         rotate: number = 0;
-
-        // animationOnFinishCallback = () => {
-        //     this.elem.remove();
-        //     Events.publish(Events.TYPE.RATE_END);
-        // }
+        position: number = 0;
 
         transform() {
             var transformations: string[] = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
-
-            // if (this.model.isRated) {
-            //
-            //     let animationPromise = this.elemImg[0].animate([
-            //         {transform: this.elemImg[0].style.transform},
-            //         {transform: transformations.join(' ')}
-            //     ],{
-            //         duration: 300,
-            //         easing: 'ease-out',
-            //         fill: 'forwards'
-            //     });
-            //
-            //     animationPromise.onfinish = this.animationOnFinishCallback;
-            //
-            // } else {
             this.elemImg.css('transform', transformations.join(' '));
-            // }
         };
 
-        setOverlay(direction:number, percentag:number) {
+        setOverlay(direction:number, percentage:number) {
             var color: string;
 
-            percentage = percentage * 0.2
+            percentage = percentage * 0.6;
             color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
 
             this.elemOverlay.css('backgroundColor', color);
@@ -125,23 +105,36 @@ module Swiper {
             // this.elemImg.unbind('transitionend'); @TODO to be considered
         }
 
-        updatePosition() {
-            var _transformValue:string[] = this.elemImg.css('transform').split(',')
-            if (_transformValue[0] !== 'none') { // if display is set to none then no transform value is detected
-                this.translateX = parseInt(_transformValue[4], 10);
-                this.rotate = 0;
-            }
+        draw() {
+            super.draw();
+            this.hammerElem = new Hammer(this.elemImg[0]);
         };
 
-        draw(index: number = 0) {
-            super.draw();
+        isFirst(): boolean {
+            return this.position === 0;
+        }
 
-            this.hammerElem = new Hammer(this.elemImg[0]);
-            this.updatePosition();
+        setPosition(index:number = Config.pileSize) {
+            index = (index < Config.pileSize) ? index : Config.pileSize;
+            this.position = index;
+            this.setClass(index);
 
             // If card is front-most then add event listeners
-            if (index == 1) this.registerEvents();
-        };
+            if (this.isFirst())
+                this.registerEvents();
+        }
+
+        moveTo(index:number) {
+            this.setPosition(index);
+        }
+
+        private setClass(index:number) {
+            this.elem.addClass(this.cls(index));
+        }
+
+        private cls(index) {
+            return 'm-front-' + index;
+        }
 
         init() {
             this.elemImg     = this.elem.find('.card-img');

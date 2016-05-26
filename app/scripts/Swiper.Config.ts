@@ -14,6 +14,9 @@ module Swiper {
         FastClick.attach(document.body);
       });
     }
+
+    static pileSize = 3;
+
   }
 
 };

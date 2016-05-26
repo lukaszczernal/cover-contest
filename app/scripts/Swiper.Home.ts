@@ -21,7 +21,7 @@ module Swiper {
 
     loadFirstDeal() {
       this.startButton.text('Loading');
-      Route.get('deck').model.get().done(() => this.onDealLoad());
+      Route.get('deck').model.get().done( this.onDealLoad.bind(this) );
     }
 
     onDealLoad() {

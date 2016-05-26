@@ -20,6 +20,7 @@ module Swiper {
         size = 10;
         emit = () => {
             Events.publish(Events.TYPE.GET, this.collection);
+            return this.collection;
         }
     }
 }

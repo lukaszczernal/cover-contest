@@ -15,7 +15,6 @@ module Swiper {
 
         rate(direction:number) {
           this.isRated = true;
-          console.log('direction',direction);
           this.rating = direction;
           Events.publish(Events.TYPE.RATE);
         }

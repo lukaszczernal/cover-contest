@@ -17,49 +17,46 @@ module Swiper {
             Route.goto('summary');
         }
 
+        // remove a card if the first on pile is really front one
+        // initially all cards have position that is invisible on a rendered pile
         removeFrontCard() {
-            Array.prototype.shift.call(this.pile);
-        };
+            if (this.pile[0].isFirst())
+                this.pile.shift();
+        }
 
         switchCard() {
-            var i: number = 0;
-            var len: number;
-            var limit: number;
-
             this.removeFrontCard();
-            len = this.pile.length;
-            limit = (len < 4) ? len : 4;
 
-            // @TODO add method to Card class - move forward (and add register event there)
-            while(i < limit) {
-                this.pile[i].elem.removeClass('m-front-' + (i+2)).addClass('m-front-' + (i+1));
-                i++;
-            }
+            let len:number = this.pile.length;
+            let limit:number = (len < Config.pileSize) ? len : Config.pileSize;
 
-            if (len > 0)
-              this.pile[0].registerEvents() //register touch events for the top-most card
-        };
+            for(let i:number = 0; i<limit; i++)
+                setTimeout( () => {
+                    this.pile[i].moveTo(i)
+                }, i * 200);
+        }
 
-        createCards(cards: Array<CardModel>) {
+        addCards(cards:CardModel[]) {
             cards.forEach( (cardModel:CardModel) => {
-                var cardCtrl: Card = new Card(this.elemQueue, cardModel, new Swiper.View('card'));
-                this.addCard(cardCtrl);
+                this.addCard(cardModel);
             });
         }
 
-        addCard(card:Card) {
-            var index:number = this.pile.push(card);
-            if (index < 5) {
-                card.elem.addClass('m-front-' + index)
-            };
+        addCard(cardModel:CardModel) {
+            let card:Card = new Card(this.elemQueue, cardModel, new Swiper.View('card'));
+            this.pile.push(card);
+            card.setPosition();
+            card.draw();
+        }
 
-            card.draw(index);
+        onGetSuccess(cards:CardModel[]) {
+            this.addCards(cards);
         }
 
         subscribeEvents() {
-            Events.subscribe(Events.TYPE.RATE, () => this.switchCard());
-            Events.subscribe(Events.TYPE.GET, (res: Array<CardModel>) => this.createCards(res));
-            Events.subscribe(Events.TYPE.RATE_END, () => { this.endGame() });
+            Events.subscribe(Events.TYPE.RATE, this.switchCard.bind(this));
+            Events.subscribe(Events.TYPE.GET, this.onGetSuccess.bind(this));
+            Events.subscribe(Events.TYPE.RATE_END, this.endGame.bind(this));
         }
 
         init() {
@@ -68,7 +65,12 @@ module Swiper {
         };
 
         activate() {
-          if (this.pile.length === 0) this.model.get();
+            if (this.pile.length) {
+                this.switchCard();
+            } else {
+                this.model.get()
+                .then( this.switchCard.bind(this) );
+            }
         }
 
         constructor(parent: JQuery, model: DeckModel, view: View) {
