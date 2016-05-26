@@ -55,6 +55,7 @@ var Swiper;
             this.size = 10;
             this.emit = function () {
                 Swiper.Events.publish(Swiper.Events.TYPE.GET, _this.collection);
+                return _this.collection;
             };
         }
         return Collection;
@@ -73,7 +74,7 @@ var Swiper;
             var _this = this;
             _super.apply(this, arguments);
             this.total = 64; // todo last known count - how to calculate?
-            this.size = 3;
+            this.count = 10;
             this.transform = function (data) {
                 var cards = [];
                 data.media.forEach(function (media) {
@@ -85,7 +86,7 @@ var Swiper;
             };
         }
         DeckModel.prototype.source = function () {
-            return "http://aws-xstream-api-production.xstream.dk/media/videos?limit=" + this.size + "&no_series=true&offset=" + this.randomOffset();
+            return "http://aws-xstream-api-production.xstream.dk/media/videos?limit=" + this.count + "&no_series=true&offset=" + this.randomOffset();
         };
         ;
         DeckModel.prototype.get = function () {
@@ -94,8 +95,8 @@ var Swiper;
                 .then(this.emit);
         };
         DeckModel.prototype.randomOffset = function () {
-            var pages = Math.floor(this.total / this.size);
-            var rand = Math.floor(Math.random() * pages) * this.size;
+            var pages = Math.floor(this.total / this.count);
+            var rand = Math.floor(Math.random() * pages) * this.count;
             return rand;
         };
         DeckModel.prototype.transformImage = function (images) {
@@ -139,7 +140,6 @@ var Swiper;
         }
         CardModel.prototype.rate = function (direction) {
             this.isRated = true;
-            console.log('direction', direction);
             this.rating = direction;
             Swiper.Events.publish(Swiper.Events.TYPE.RATE);
         };
@@ -205,37 +205,19 @@ var Swiper;
             this.newTranslateX = 0;
             this.translateX = 0;
             this.rotate = 0;
+            this.position = 0;
         }
-        // animationOnFinishCallback = () => {
-        //     this.elem.remove();
-        //     Events.publish(Events.TYPE.RATE_END);
-        // }
         Card.prototype.transform = function () {
             var transformations = [];
             transformations.push("translateX(" + this.newTranslateX + "px)");
             transformations.push("translateZ(0)"); // hardware acceleration
             transformations.push("rotate(" + this.rotate + "deg)");
-            // if (this.model.isRated) {
-            //
-            //     let animationPromise = this.elemImg[0].animate([
-            //         {transform: this.elemImg[0].style.transform},
-            //         {transform: transformations.join(' ')}
-            //     ],{
-            //         duration: 300,
-            //         easing: 'ease-out',
-            //         fill: 'forwards'
-            //     });
-            //
-            //     animationPromise.onfinish = this.animationOnFinishCallback;
-            //
-            // } else {
             this.elemImg.css('transform', transformations.join(' '));
-            // }
         };
         ;
-        Card.prototype.setOverlay = function (direction, percentag) {
+        Card.prototype.setOverlay = function (direction, percentage) {
             var color;
-            percentage = percentage * 0.2;
+            percentage = percentage * 0.6;
             color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
             this.elemOverlay.css('backgroundColor', color);
             this.elemOverlay.css('opacity', percentage);
@@ -303,24 +285,32 @@ var Swiper;
             this.hammerElem.destroy();
             // this.elemImg.unbind('transitionend'); @TODO to be considered
         };
-        Card.prototype.updatePosition = function () {
-            var _transformValue = this.elemImg.css('transform').split(',');
-            if (_transformValue[0] !== 'none') {
-                this.translateX = parseInt(_transformValue[4], 10);
-                this.rotate = 0;
-            }
-        };
-        ;
-        Card.prototype.draw = function (index) {
-            if (index === void 0) { index = 0; }
+        Card.prototype.draw = function () {
             _super.prototype.draw.call(this);
             this.hammerElem = new Hammer(this.elemImg[0]);
-            this.updatePosition();
-            // If card is front-most then add event listeners
-            if (index == 1)
-                this.registerEvents();
         };
         ;
+        Card.prototype.isFirst = function () {
+            return this.position === 0;
+        };
+        Card.prototype.setPosition = function (index) {
+            if (index === void 0) { index = Swiper.Config.pileSize; }
+            index = (index < Swiper.Config.pileSize) ? index : Swiper.Config.pileSize;
+            this.position = index;
+            this.setClass(index);
+            // If card is front-most then add event listeners
+            if (this.isFirst())
+                this.registerEvents();
+        };
+        Card.prototype.moveTo = function (index) {
+            this.setPosition(index);
+        };
+        Card.prototype.setClass = function (index) {
+            this.elem.addClass(this.cls(index));
+        };
+        Card.prototype.cls = function (index) {
+            return 'm-front-' + index;
+        };
         Card.prototype.init = function () {
             this.elemImg = this.elem.find('.card-img');
             this.elemTitle = this.elem.find('.card-title');
@@ -348,6 +338,7 @@ var Swiper;
                 FastClick.attach(document.body);
             });
         };
+        Config.pileSize = 3;
         return Config;
     }());
     Swiper.Config = Config;
@@ -371,7 +362,7 @@ var Swiper;
         }
         Route.goto = function (name) {
             var target = Route.get(name);
-            target.activate(); // todo deactivate previous state
+            target.activate();
             this.statesElem.hide();
             target.parent.show();
         };
@@ -423,46 +414,45 @@ var Swiper;
             if (this.pile.length === 0)
                 Swiper.Route.goto('summary');
         };
+        // remove a card if the first on pile is really front one
+        // initially all cards have position that is invisible on a rendered pile
         Deck.prototype.removeFrontCard = function () {
-            Array.prototype.shift.call(this.pile);
+            if (this.pile[0].isFirst())
+                this.pile.shift();
         };
-        ;
         Deck.prototype.switchCard = function () {
-            var i = 0;
-            var len;
-            var limit;
+            var _this = this;
             this.removeFrontCard();
-            len = this.pile.length;
-            limit = (len < 4) ? len : 4;
-            // @TODO add method to Card class - move forward (and add register event there)
-            while (i < limit) {
-                this.pile[i].elem.removeClass('m-front-' + (i + 2)).addClass('m-front-' + (i + 1));
-                i++;
+            var len = this.pile.length;
+            var limit = (len < Swiper.Config.pileSize) ? len : Swiper.Config.pileSize;
+            var _loop_1 = function(i) {
+                setTimeout(function () {
+                    _this.pile[i].moveTo(i);
+                }, i * 200);
+            };
+            for (var i = 0; i < limit; i++) {
+                _loop_1(i);
             }
-            if (len > 0)
-                this.pile[0].registerEvents(); //register touch events for the top-most card
         };
-        ;
-        Deck.prototype.createCards = function (cards) {
+        Deck.prototype.addCards = function (cards) {
             var _this = this;
             cards.forEach(function (cardModel) {
-                var cardCtrl = new Swiper.Card(_this.elemQueue, cardModel, new Swiper.View('card'));
-                _this.addCard(cardCtrl);
+                _this.addCard(cardModel);
             });
         };
-        Deck.prototype.addCard = function (card) {
-            var index = this.pile.push(card);
-            if (index < 5) {
-                card.elem.addClass('m-front-' + index);
-            }
-            ;
-            card.draw(index);
+        Deck.prototype.addCard = function (cardModel) {
+            var card = new Swiper.Card(this.elemQueue, cardModel, new Swiper.View('card'));
+            this.pile.push(card);
+            card.setPosition();
+            card.draw();
+        };
+        Deck.prototype.onGetSuccess = function (cards) {
+            this.addCards(cards);
         };
         Deck.prototype.subscribeEvents = function () {
-            var _this = this;
-            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE, function () { return _this.switchCard(); });
-            Swiper.Events.subscribe(Swiper.Events.TYPE.GET, function (res) { return _this.createCards(res); });
-            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE_END, function () { _this.endGame(); });
+            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE, this.switchCard.bind(this));
+            Swiper.Events.subscribe(Swiper.Events.TYPE.GET, this.onGetSuccess.bind(this));
+            Swiper.Events.subscribe(Swiper.Events.TYPE.RATE_END, this.endGame.bind(this));
         };
         Deck.prototype.init = function () {
             this.elemQueue = this.elem.find('.swiper-queue');
@@ -470,8 +460,13 @@ var Swiper;
         };
         ;
         Deck.prototype.activate = function () {
-            if (this.pile.length === 0)
-                this.model.get();
+            if (this.pile.length) {
+                this.switchCard();
+            }
+            else {
+                this.model.get()
+                    .then(this.switchCard.bind(this));
+            }
         };
         return Deck;
     }(Swiper.Ctrl));
@@ -508,9 +503,8 @@ var Swiper;
             this.startButton.on('click', this.startContest);
         };
         Home.prototype.loadFirstDeal = function () {
-            var _this = this;
             this.startButton.text('Loading');
-            Swiper.Route.get('deck').model.get().done(function () { return _this.onDealLoad(); });
+            Swiper.Route.get('deck').model.get().done(this.onDealLoad.bind(this));
         };
         Home.prototype.onDealLoad = function () {
             this.registerEvents();
