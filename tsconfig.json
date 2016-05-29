@@ -45,6 +45,7 @@
         "app/scripts/Swiper.Route.ts",
         "app/scripts/Swiper.Summary.Model.ts",
         "app/scripts/Swiper.Summary.ts",
+        "app/scripts/Swiper.Timeout.ts",
         "app/scripts/Swiper.ts",
         "app/scripts/Swiper.View.ts",
         "typings/fastclick/fastclick.d.ts",
