@@ -224,10 +224,6 @@ var Swiper;
         };
         Card.prototype.registerEvents = function () {
             var _this = this;
-            this.elemImg.on('transitionend', function () {
-                // this.elem.remove();
-                // Events.publish(Events.TYPE.RATE_END);
-            });
             this.hammerElem.on("panstart", function () {
                 _this.elemImg.removeClass('tween');
                 Swiper.Events.publish(Swiper.Events.TYPE.RATE_START);
@@ -303,7 +299,10 @@ var Swiper;
                 this.registerEvents();
         };
         Card.prototype.moveTo = function (index) {
-            this.setPosition(index);
+            var _this = this;
+            setTimeout(function () {
+                _this.setPosition(index);
+            }, 0);
         };
         Card.prototype.setClass = function (index) {
             this.elem.addClass(this.cls(index));
@@ -411,7 +410,8 @@ var Swiper;
             Swiper.Route.init('instructions');
         }
         Deck.prototype.endGame = function () {
-            if (this.pile.length === 0)
+            --this.ratingCount;
+            if (this.ratingCount === 0)
                 Swiper.Route.goto('summary');
         };
         // remove a card if the first on pile is really front one
@@ -421,17 +421,11 @@ var Swiper;
                 this.pile.shift();
         };
         Deck.prototype.switchCard = function () {
-            var _this = this;
             this.removeFrontCard();
             var len = this.pile.length;
             var limit = (len < Swiper.Config.pileSize) ? len : Swiper.Config.pileSize;
-            var _loop_1 = function(i) {
-                setTimeout(function () {
-                    _this.pile[i].moveTo(i);
-                }, i * 200);
-            };
             for (var i = 0; i < limit; i++) {
-                _loop_1(i);
+                this.pile[i].moveTo(i);
             }
         };
         Deck.prototype.addCards = function (cards) {
@@ -460,6 +454,8 @@ var Swiper;
         };
         ;
         Deck.prototype.activate = function () {
+            this.ratingCount = this.model.count;
+            //TODO improve (once its fetching the date once it just showing it)
             if (this.pile.length) {
                 this.switchCard();
             }
@@ -602,6 +598,29 @@ var Swiper;
         return Summary;
     }(Swiper.Ctrl));
     Swiper.Summary = Summary;
+})(Swiper || (Swiper = {}));
+/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+//TODO try to implement it as setTimeout prototype
+var Swiper;
+(function (Swiper) {
+    var Timeout = (function () {
+        function Timeout(callback, delay) {
+            this.callback = callback;
+            this.completed = false;
+            this.timeout = setTimeout(this.resolve.bind(this), delay);
+        }
+        Timeout.prototype.resolve = function () {
+            this.reject();
+            this.callback();
+        };
+        Timeout.prototype.reject = function () {
+            clearTimeout(this.timeout);
+            this.resolve = function () { };
+        };
+        return Timeout;
+    }());
+    Swiper.Timeout = Timeout;
 })(Swiper || (Swiper = {}));
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./Swiper.Config.ts" />
