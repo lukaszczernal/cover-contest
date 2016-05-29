@@ -36,11 +36,6 @@ module Swiper {
 
         registerEvents() {
 
-            this.elemImg.on('transitionend', () => {
-                // this.elem.remove();
-                // Events.publish(Events.TYPE.RATE_END);
-            });
-
             this.hammerElem.on("panstart", () => {
                 this.elemImg.removeClass('tween');
                 Events.publish(Events.TYPE.RATE_START);
@@ -125,7 +120,9 @@ module Swiper {
         }
 
         moveTo(index:number) {
-            this.setPosition(index);
+            setTimeout( () => {
+                this.setPosition(index) }
+            , 0);
         }
 
         private setClass(index:number) {

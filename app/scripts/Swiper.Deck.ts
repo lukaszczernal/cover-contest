@@ -9,12 +9,14 @@
 module Swiper {
 
     export class Deck extends Ctrl {
-        elemQueue: JQuery;
-        pile: Array<Card> = [];
+        elemQueue:JQuery;
+        pile:Array<Card> = [];
+        ratingCount:number;
 
         endGame() {
-          if (this.pile.length === 0)
-            Route.goto('summary');
+            --this.ratingCount;
+            if (this.ratingCount === 0)
+                Route.goto('summary');
         }
 
         // remove a card if the first on pile is really front one
@@ -30,10 +32,9 @@ module Swiper {
             let len:number = this.pile.length;
             let limit:number = (len < Config.pileSize) ? len : Config.pileSize;
 
-            for(let i:number = 0; i<limit; i++)
-                setTimeout( () => {
-                    this.pile[i].moveTo(i)
-                }, i * 200);
+            for(let i:number = 0; i<limit; i++) {
+                this.pile[i].moveTo(i);
+            }
         }
 
         addCards(cards:CardModel[]) {
@@ -65,6 +66,8 @@ module Swiper {
         };
 
         activate() {
+            this.ratingCount = this.model.count;
+            //TODO improve (once its fetching the date once it just showing it)
             if (this.pile.length) {
                 this.switchCard();
             } else {
