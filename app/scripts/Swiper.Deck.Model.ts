@@ -15,17 +15,47 @@ module Swiper {
           return `http://aws-xstream-api-production.xstream.dk/media/videos?limit=${this.count}&no_series=true&offset=${this.randomOffset()}`
       };
 
-      get() {
-          return $.ajax(this.source())
-          .then(this.transform)
-          .then(this.emit);
-      }
+        get() {
+            return $.ajax(this.source())
+                .then(this.transform.bind(this))
+                .then(this.store.bind(this))
+                .then(this.preload)
+                .done(this.emit);
+        }
 
       randomOffset() {
           let pages = Math.floor(this.total / this.count);
           let rand = Math.floor(Math.random() * pages) * this.count;
           return rand;
       }
+
+        preload(cards) {
+            let def = $.Deferred();
+            let timeout = setTimeout(def.resolve, 5000);
+            let len = cards.length;
+
+            cards.forEach(preloadImage);
+
+            function preloadImage(card) {
+                let img = new Image();
+                img.src = card.src;
+                img.onload = onload;
+            };
+
+            function onload() {
+                if (--len == 0) {
+                    clearTimeout(timeout);
+                    def.resolve();
+                }
+            }
+            return def.promise();
+        }
+
+        store(cards) {
+            this.total = cards.count;
+            this.collection = cards;
+            return cards;
+        }
 
       transformImage(images) {
           var len: number = images.length;
@@ -46,14 +76,13 @@ module Swiper {
           };
       }
 
-      transform = (data: any)  => {
+      transform(data: any) {
           var cards: CardModel[] = [];
           data.media.forEach((media: any) => {
               var card: CardResponse = this.transformCard(media);
               cards.push(new CardModel(card));
           });
-          this.total = data.count;
-          this.collection = _.shuffle(cards);
+          return _.shuffle(cards);
       }
   }
 }
