@@ -71,19 +71,9 @@ var Swiper;
     var DeckModel = (function (_super) {
         __extends(DeckModel, _super);
         function DeckModel() {
-            var _this = this;
             _super.apply(this, arguments);
             this.total = 64; // todo last known count - how to calculate?
             this.count = 10;
-            this.transform = function (data) {
-                var cards = [];
-                data.media.forEach(function (media) {
-                    var card = _this.transformCard(media);
-                    cards.push(new Swiper.CardModel(card));
-                });
-                _this.total = data.count;
-                _this.collection = _.shuffle(cards);
-            };
         }
         DeckModel.prototype.source = function () {
             return "http://aws-xstream-api-production.xstream.dk/media/videos?limit=" + this.count + "&no_series=true&offset=" + this.randomOffset();
@@ -91,13 +81,39 @@ var Swiper;
         ;
         DeckModel.prototype.get = function () {
             return $.ajax(this.source())
-                .then(this.transform)
-                .then(this.emit);
+                .then(this.transform.bind(this))
+                .then(this.store.bind(this))
+                .then(this.preload)
+                .done(this.emit);
         };
         DeckModel.prototype.randomOffset = function () {
             var pages = Math.floor(this.total / this.count);
             var rand = Math.floor(Math.random() * pages) * this.count;
             return rand;
+        };
+        DeckModel.prototype.preload = function (cards) {
+            var def = $.Deferred();
+            var timeout = setTimeout(def.resolve, 5000);
+            var len = cards.length;
+            cards.forEach(preloadImage);
+            function preloadImage(card) {
+                var img = new Image();
+                img.src = card.src;
+                img.onload = onload;
+            }
+            ;
+            function onload() {
+                if (--len == 0) {
+                    clearTimeout(timeout);
+                    def.resolve();
+                }
+            }
+            return def.promise();
+        };
+        DeckModel.prototype.store = function (cards) {
+            this.total = cards.count;
+            this.collection = cards;
+            return cards;
         };
         DeckModel.prototype.transformImage = function (images) {
             var len = images.length;
@@ -116,6 +132,15 @@ var Swiper;
                 src: this.transformImage(card.images),
                 title: card.titles.default
             };
+        };
+        DeckModel.prototype.transform = function (data) {
+            var _this = this;
+            var cards = [];
+            data.media.forEach(function (media) {
+                var card = _this.transformCard(media);
+                cards.push(new Swiper.CardModel(card));
+            });
+            return _.shuffle(cards);
         };
         return DeckModel;
     }(Swiper.Collection));
