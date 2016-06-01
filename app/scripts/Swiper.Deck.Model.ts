@@ -18,7 +18,6 @@ module Swiper {
         get() {
             return $.ajax(this.source())
                 .then(this.transform.bind(this))
-                .then(this.store.bind(this))
                 .then(this.preload)
                 .done(this.emit);
         }
@@ -51,12 +50,6 @@ module Swiper {
             return def.promise();
         }
 
-        store(cards) {
-            this.total = cards.count;
-            this.collection = cards;
-            return cards;
-        }
-
       transformImage(images) {
           var len: number = images.length;
           while(len--) {
@@ -82,6 +75,8 @@ module Swiper {
               var card: CardResponse = this.transformCard(media);
               cards.push(new CardModel(card));
           });
+          this.total = data.count;
+          this.collection = cards;
           return _.shuffle(cards);
       }
   }
