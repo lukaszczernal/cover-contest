@@ -82,7 +82,6 @@ var Swiper;
         DeckModel.prototype.get = function () {
             return $.ajax(this.source())
                 .then(this.transform.bind(this))
-                .then(this.store.bind(this))
                 .then(this.preload)
                 .done(this.emit);
         };
@@ -110,11 +109,6 @@ var Swiper;
             }
             return def.promise();
         };
-        DeckModel.prototype.store = function (cards) {
-            this.total = cards.count;
-            this.collection = cards;
-            return cards;
-        };
         DeckModel.prototype.transformImage = function (images) {
             var len = images.length;
             while (len--) {
@@ -140,6 +134,8 @@ var Swiper;
                 var card = _this.transformCard(media);
                 cards.push(new Swiper.CardModel(card));
             });
+            this.total = data.count;
+            this.collection = cards;
             return _.shuffle(cards);
         };
         return DeckModel;

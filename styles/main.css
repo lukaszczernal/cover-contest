@@ -79,11 +79,11 @@ body {
   -o-transform: translate(0, -17%) scale(0.8);
   -ms-transform: translate(0, -17%) scale(0.8);
   transform: translate(0, -17%) scale(0.8);
-  -webkit-transition-delay: 0.4s;
-  -moz-transition-delay: 0.4s;
-  -o-transition-delay: 0.4s;
-  -ms-transition-delay: 0.4s;
-  transition-delay: 0.4s;
+  -webkit-transition-delay: 0.2s;
+  -moz-transition-delay: 0.2s;
+  -o-transition-delay: 0.2s;
+  -ms-transition-delay: 0.2s;
+  transition-delay: 0.2s;
 }
 .m-front-1 .card-img {
   opacity: 1;
@@ -94,11 +94,11 @@ body {
   -o-transform: translate(0, -9%) scale(0.9);
   -ms-transform: translate(0, -9%) scale(0.9);
   transform: translate(0, -9%) scale(0.9);
-  -webkit-transition-delay: 0.2s;
-  -moz-transition-delay: 0.2s;
-  -o-transition-delay: 0.2s;
-  -ms-transition-delay: 0.2s;
-  transition-delay: 0.2s;
+  -webkit-transition-delay: 0.1s;
+  -moz-transition-delay: 0.1s;
+  -o-transition-delay: 0.1s;
+  -ms-transition-delay: 0.1s;
+  transition-delay: 0.1s;
 }
 .m-front-0 .card-img {
   opacity: 1;
