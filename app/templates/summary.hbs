@@ -1,22 +1,46 @@
 <div class="summary">
     <h1 class="summary-title">Summary</h1>
 
-    <ul class="summary-list">
-        {{#each collection}}
-            <li class="summary-item">
-                <img class="summary-itemImg" src="{{src}}"/>
-                <div class="summary-itemText">
-                    <span class="summary-itemTitle">{{title}}</span>
-                    <div class="summary-itemRating">
-                        <span>You:</span>
-                        <span>{{rating}}</span>
-                        <span>Avg:</span>
-                        <span>N/A</span>
+    {{#if likeList}}
+        <h2 class="summary-subtitle">You liked {{likeList.length}} covers</h2>
+        <ul class="summary-list">
+            {{#each likeList}}
+                {{!-- TODO convert to helper  --}}
+                <li class="summary-item">
+                    <img class="summary-itemImg" src="{{src}}"/>
+                    <div class="summary-itemText">
+                        <span class="summary-itemTitle">{{title}}</span>
+                        <div class="summary-itemRating">
+                            <span>You:</span>
+                            <span>{{rating}}</span>
+                            <span>Avg:</span>
+                            <span>N/A</span>
+                        </div>
                     </div>
-                </div>
-            </li>
-        {{/each}}
-    </ul>
+                </li>
+            {{/each}}
+        </ul>
+    {{/if}}
+
+    {{#if dislikeList}}
+        <h2 class="summary-subtitle">You disliked {{dislikeList.length}} covers</h2>
+        <ul class="summary-list">
+            {{#each dislikeList}}
+                <li class="summary-item">
+                    <img class="summary-itemImg" src="{{src}}"/>
+                    <div class="summary-itemText">
+                        <span class="summary-itemTitle">{{title}}</span>
+                        <div class="summary-itemRating">
+                            <span>You:</span>
+                            <span>{{rating}}</span>
+                            <span>Avg:</span>
+                            <span>N/A</span>
+                        </div>
+                    </div>
+                </li>
+            {{/each}}
+        </ul>
+    {{/if}}
 
     <div class="summary-controls">
         <a class="summary-controlsBtn goToDeck btn">Again</a>

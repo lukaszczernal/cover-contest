@@ -10,11 +10,9 @@ module Swiper {
         id:number = null;
         src:string = null;
         title:string = null;
-        rating:number = null;
-        isRated:boolean = false;
+        rating:number = 0;
 
         rate(direction:number) {
-          this.isRated = true;
           this.rating = direction;
           Events.publish(Events.TYPE.RATE);
         }
