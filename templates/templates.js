@@ -19,19 +19,37 @@ this["CC"]["templates"]["instructions"] = Handlebars.template({"compiler":[6,">=
     return "<div class=\"instructions m-center\">\n  <div class=\"instructions-swipeArrow\">\n    <div class=\"instructions-swipeArrowImgParent\">\n      <div class=\"instructions-swipeArrowImgChild\">\n        <img class=\"instructions-swipeArrowImg\" src=\"images/arrows.svg\"/>\n      </div>\n    </div>\n  </div>\n  <div class=\"instructions-swipeLabels\">\n    <div class=\"home-swipeLabel m-negative\">Nah!</div>\n    <div class=\"home-swipeLabel m-positive\">Yea!</div>\n  </div>\n</div>\n";
 },"useData":true});
 this["CC"]["templates"]["summary"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <h2 class=\"summary-subtitle\">You liked "
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.likeList : depth0)) != null ? stack1.length : stack1), depth0))
+    + " covers</h2>\n        <ul class=\"summary-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.likeList : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </ul>\n";
+},"2":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "            <li class=\"summary-item\">\n                <img class=\"summary-itemImg\" src=\""
+  return "                <li class=\"summary-item\">\n                    <img class=\"summary-itemImg\" src=\""
     + alias3(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
-    + "\"/>\n                <div class=\"summary-itemText\">\n                    <span class=\"summary-itemTitle\">"
+    + "\"/>\n                    <div class=\"summary-itemText\">\n                        <span class=\"summary-itemTitle\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</span>\n                    <div class=\"summary-itemRating\">\n                        <span>You:</span>\n                        <span>"
+    + "</span>\n                        <div class=\"summary-itemRating\">\n                            <span>You:</span>\n                            <span>"
     + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
-    + "</span>\n                        <span>Avg:</span>\n                        <span>N/A</span>\n                    </div>\n                </div>\n            </li>\n";
+    + "</span>\n                            <span>Avg:</span>\n                            <span>N/A</span>\n                        </div>\n                    </div>\n                </li>\n";
+},"4":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <h2 class=\"summary-subtitle\">You disliked "
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.dislikeList : depth0)) != null ? stack1.length : stack1), depth0))
+    + " covers</h2>\n        <ul class=\"summary-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </ul>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"summary\">\n    <h1 class=\"summary-title\">Summary</h1>\n\n    <ul class=\"summary-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.collection : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    </ul>\n\n    <div class=\"summary-controls\">\n        <a class=\"summary-controlsBtn goToDeck btn\">Again</a>\n        <a class=\"summary-controlsBtn goToHome btn\">Home</a>\n    </div>\n\n</div>\n";
+  return "<div class=\"summary\">\n    <h1 class=\"summary-title\">Summary</h1>\n\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.likeList : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n    <div class=\"summary-controls\">\n        <a class=\"summary-controlsBtn goToDeck btn\">Again</a>\n        <a class=\"summary-controlsBtn goToHome btn\">Home</a>\n    </div>\n\n</div>\n";
 },"useData":true});

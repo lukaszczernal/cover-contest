@@ -153,14 +153,12 @@ var Swiper;
             this.id = null;
             this.src = null;
             this.title = null;
-            this.rating = null;
-            this.isRated = false;
+            this.rating = 0;
             this.id = data.id;
             this.src = data.src;
             this.title = data.title;
         }
         CardModel.prototype.rate = function (direction) {
-            this.isRated = true;
             this.rating = direction;
             Swiper.Events.publish(Swiper.Events.TYPE.RATE);
         };
@@ -575,8 +573,18 @@ var Swiper;
         function SummaryModel() {
             _super.apply(this, arguments);
         }
+        SummaryModel.prototype.resetList = function () {
+            this.likeList = [];
+            this.dislikeList = [];
+        };
         SummaryModel.prototype.update = function () {
-            this.collection = Swiper.Route.get('deck').model.collection; // gets collection from last game
+            var _this = this;
+            var cards = Swiper.Route.get('deck').model.collection; // gets collection from last game
+            this.resetList();
+            cards.forEach(function (card) {
+                var list = (card.rating > 0) ? _this.likeList : _this.dislikeList;
+                list.push(card);
+            });
         };
         return SummaryModel;
     }(Swiper.Collection));
