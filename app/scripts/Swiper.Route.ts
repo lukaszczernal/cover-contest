@@ -27,9 +27,9 @@ module Swiper {
 
     static init = (moduleName: string) => {
       console.count(moduleName+' init');
-      let moduleLowerCase: string = moduleName.toLowerCase();
-      let moduleCapital: string   = Route.toCapitalLetter(moduleLowerCase);
-      let moduleElem: string  = '#' + moduleLowerCase;
+      //TODO try to get rid of those module name transformations
+      let moduleCapital: string   = Route.toCapitalLetter(moduleName);
+      let moduleElem: string  = '#' + moduleName;
       let moduleModel: string = moduleCapital + 'Model';
 
       let elem = $(moduleElem);

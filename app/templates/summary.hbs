@@ -1,21 +1,19 @@
 <div class="summary">
     <h1 class="summary-title">Summary</h1>
 
+    {{!-- TODO remove duplicate code  --}}
     {{#if likeList}}
-        <h2 class="summary-subtitle">You liked {{likeList.length}} covers</h2>
+        <span class="summary-subtitle">You liked {{likeList.length}} covers</span>
         <ul class="summary-list">
             {{#each likeList}}
                 {{!-- TODO convert to helper  --}}
                 <li class="summary-item">
                     <img class="summary-itemImg" src="{{src}}"/>
-                    <div class="summary-itemText">
-                        <span class="summary-itemTitle">{{title}}</span>
-                        <div class="summary-itemRating">
-                            <span>You:</span>
-                            <span>{{rating}}</span>
-                            <span>Avg:</span>
-                            <span>N/A</span>
+                    <div class="summary-itemRating">
+                        <div class="summary-itemRatingProgressWrapper m-liked">
+                            <div class="summary-itemRatingProgress"></div>
                         </div>
+                        <span class="summary-itemRatingText">50% agree</span>
                     </div>
                 </li>
             {{/each}}
@@ -23,19 +21,16 @@
     {{/if}}
 
     {{#if dislikeList}}
-        <h2 class="summary-subtitle">You disliked {{dislikeList.length}} covers</h2>
+        <span class="summary-subtitle">You disliked {{dislikeList.length}} covers</span>
         <ul class="summary-list">
             {{#each dislikeList}}
                 <li class="summary-item">
                     <img class="summary-itemImg" src="{{src}}"/>
-                    <div class="summary-itemText">
-                        <span class="summary-itemTitle">{{title}}</span>
-                        <div class="summary-itemRating">
-                            <span>You:</span>
-                            <span>{{rating}}</span>
-                            <span>Avg:</span>
-                            <span>N/A</span>
+                    <div class="summary-itemRating m-disliked">
+                        <div class="summary-itemRatingProgressWrapper m-disliked">
+                            <div class="summary-itemRatingProgress"></div>
                         </div>
+                        <span class="summary-itemRatingText">50% agree</span>
                     </div>
                 </li>
             {{/each}}

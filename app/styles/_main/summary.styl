@@ -8,31 +8,53 @@
 .summary-title
     text-transform uppercase
     font-size (32/16)rem
+    margin-bottom 0.5rem
+
+.summary-subtitle
+    font-size (20/16)rem
+    margin 1rem 0
 
 .summary-list
     flex 1
     margin 0
-    padding 0 0 0 1rem
+    padding 0 1rem 0 1rem
 
 .summary-item
     display flex
     list-style none
-    flex 1
-    flex-shrink 1
     height 6rem
     padding-bottom 1rem
 
 .summary-itemImg
     height 100%
 
-.summary-itemText
+.summary-itemRating
     padding-left 1rem
-    text-align left
+    align-items flex-start
+    justify-content center
+    display flex
+    flex-grow 1
+    flex-direction column
 
-.summary-itemTitle
-    font-weight bold
+.summary-itemRatingProgressWrapper
+    width 100%
+    height 0.5rem
+    margin-top 1rem
 
-// .summary-itemRating
+    &.m-liked
+        background-color: lighten(#90dc95, 50%)
+
+    &.m-disliked
+        background-color: #dc9090
+
+.summary-itemRatingProgress
+    width 30%
+    background-color: #90dc95
+    height 100%
+
+.summary-itemRatingText
+    margin 0.4rem 0
+    font-size 0.9rem
 
 .summary-controls
     display flex
