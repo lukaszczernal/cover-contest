@@ -399,9 +399,9 @@ var Swiper;
         Route.states = {};
         Route.init = function (moduleName) {
             console.count(moduleName + ' init');
-            var moduleLowerCase = moduleName.toLowerCase();
-            var moduleCapital = Route.toCapitalLetter(moduleLowerCase);
-            var moduleElem = '#' + moduleLowerCase;
+            //TODO try to get rid of those module name transformations
+            var moduleCapital = Route.toCapitalLetter(moduleName);
+            var moduleElem = '#' + moduleName;
             var moduleModel = moduleCapital + 'Model';
             var elem = $(moduleElem);
             var model = (Swiper[moduleModel]) ? new Swiper[moduleModel]() : new Swiper.Model();

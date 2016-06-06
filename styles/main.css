@@ -351,6 +351,11 @@ body {
 .summary-title {
   text-transform: uppercase;
   font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.summary-subtitle {
+  font-size: 1.25rem;
+  margin: 1rem 0;
 }
 .summary-list {
   -webkit-box-flex: 1;
@@ -361,7 +366,7 @@ body {
   -ms-flex: 1;
   flex: 1;
   margin: 0;
-  padding: 0 0 0 1rem;
+  padding: 0 1rem 0 1rem;
 }
 .summary-item {
   display: -webkit-box;
@@ -371,27 +376,65 @@ body {
   display: box;
   display: flex;
   list-style: none;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  -webkit-flex-shrink: 1;
-  flex-shrink: 1;
   height: 6rem;
   padding-bottom: 1rem;
 }
 .summary-itemImg {
   height: 100%;
 }
-.summary-itemText {
+.summary-itemRating {
   padding-left: 1rem;
-  text-align: left;
+  -webkit-box-align: start;
+  -moz-box-align: start;
+  -o-box-align: start;
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  -ms-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -o-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
-.summary-itemTitle {
-  font-weight: bold;
+.summary-itemRatingProgressWrapper {
+  width: 100%;
+  height: 0.5rem;
+  margin-top: 1rem;
+}
+.summary-itemRatingProgressWrapper.m-liked {
+  background-color: #c8eeca;
+}
+.summary-itemRatingProgressWrapper.m-disliked {
+  background-color: #dc9090;
+}
+.summary-itemRatingProgress {
+  width: 30%;
+  background-color: #90dc95;
+  height: 100%;
+}
+.summary-itemRatingText {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
 }
 .summary-controls {
   display: -webkit-box;

@@ -21,29 +21,31 @@ this["CC"]["templates"]["instructions"] = Handlebars.template({"compiler":[6,">=
 this["CC"]["templates"]["summary"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "        <h2 class=\"summary-subtitle\">You liked "
+  return "        <span class=\"summary-subtitle\">You liked "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.likeList : depth0)) != null ? stack1.length : stack1), depth0))
-    + " covers</h2>\n        <ul class=\"summary-list\">\n"
+    + " covers</span>\n        <ul class=\"summary-list\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.likeList : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n";
 },"2":function(depth0,helpers,partials,data) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var helper;
 
   return "                <li class=\"summary-item\">\n                    <img class=\"summary-itemImg\" src=\""
-    + alias3(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    <div class=\"summary-itemText\">\n                        <span class=\"summary-itemTitle\">"
-    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</span>\n                        <div class=\"summary-itemRating\">\n                            <span>You:</span>\n                            <span>"
-    + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
-    + "</span>\n                            <span>Avg:</span>\n                            <span>N/A</span>\n                        </div>\n                    </div>\n                </li>\n";
+    + this.escapeExpression(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
+    + "\"/>\n                    <div class=\"summary-itemRating\">\n                        <div class=\"summary-itemRatingProgressWrapper m-liked\">\n                            <div class=\"summary-itemRatingProgress\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">50% agree</span>\n                    </div>\n                </li>\n";
 },"4":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "        <h2 class=\"summary-subtitle\">You disliked "
+  return "        <span class=\"summary-subtitle\">You disliked "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.dislikeList : depth0)) != null ? stack1.length : stack1), depth0))
-    + " covers</h2>\n        <ul class=\"summary-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + " covers</span>\n        <ul class=\"summary-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "                <li class=\"summary-item\">\n                    <img class=\"summary-itemImg\" src=\""
+    + this.escapeExpression(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
+    + "\"/>\n                    <div class=\"summary-itemRating m-disliked\">\n                        <div class=\"summary-itemRatingProgressWrapper m-disliked\">\n                            <div class=\"summary-itemRatingProgress\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">50% agree</span>\n                    </div>\n                </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
