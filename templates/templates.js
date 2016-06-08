@@ -27,11 +27,15 @@ this["CC"]["templates"]["summary"] = Handlebars.template({"1":function(depth0,he
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.likeList : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n";
 },"2":function(depth0,helpers,partials,data) {
-    var helper;
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "                <li class=\"summary-item\">\n                    <img class=\"summary-itemImg\" src=\""
-    + this.escapeExpression(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    <div class=\"summary-itemRating\">\n                        <div class=\"summary-itemRatingProgressWrapper m-liked\">\n                            <div class=\"summary-itemRatingProgress\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">50% agree</span>\n                    </div>\n                </li>\n";
+    + alias3(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
+    + "\"/>\n                    <div class=\"summary-itemRating\">\n                        <div class=\"summary-itemRatingProgressWrapper m-liked\">\n                            <div class=\"summary-itemRatingProgressBg\"></div>\n                            <div class=\"summary-itemRatingProgress\" style=\"width:"
+    + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
+    + "%\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">"
+    + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
+    + "% agree</span>\n                    </div>\n                </li>\n";
 },"4":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -41,11 +45,15 @@ this["CC"]["templates"]["summary"] = Handlebars.template({"1":function(depth0,he
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n";
 },"5":function(depth0,helpers,partials,data) {
-    var helper;
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "                <li class=\"summary-item\">\n                    <img class=\"summary-itemImg\" src=\""
-    + this.escapeExpression(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    <div class=\"summary-itemRating m-disliked\">\n                        <div class=\"summary-itemRatingProgressWrapper m-disliked\">\n                            <div class=\"summary-itemRatingProgress\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">50% agree</span>\n                    </div>\n                </li>\n";
+    + alias3(((helper = (helper = helpers.src || (depth0 != null ? depth0.src : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"src","hash":{},"data":data}) : helper)))
+    + "\"/>\n                    <div class=\"summary-itemRating m-disliked\">\n                        <div class=\"summary-itemRatingProgressWrapper m-disliked\">\n                            <div class=\"summary-itemRatingProgressBg\"></div>\n                            <div class=\"summary-itemRatingProgress\" style=\"width:"
+    + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
+    + "%\"></div>\n                        </div>\n                        <span class=\"summary-itemRatingText\">"
+    + alias3(((helper = (helper = helpers.rating || (depth0 != null ? depth0.rating : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"rating","hash":{},"data":data}) : helper)))
+    + "% agree</span>\n                    </div>\n                </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -53,5 +61,5 @@ this["CC"]["templates"]["summary"] = Handlebars.template({"1":function(depth0,he
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.likeList : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.dislikeList : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n    <div class=\"summary-controls\">\n        <a class=\"summary-controlsBtn goToDeck btn\">Again</a>\n        <a class=\"summary-controlsBtn goToHome btn\">Home</a>\n    </div>\n\n</div>\n";
+    + "\n    <div class=\"summary-controls\">\n        <a class=\"summary-controlsBtn goToDeck btn\">One more round</a>\n    </div>\n\n</div>\n";
 },"useData":true});

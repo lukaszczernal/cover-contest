@@ -153,13 +153,14 @@ var Swiper;
             this.id = null;
             this.src = null;
             this.title = null;
-            this.rating = 0;
+            this.userRating = 0;
+            this.rating = Math.floor(Math.random() * 100) + 0; //TODO get real data  
             this.id = data.id;
             this.src = data.src;
             this.title = data.title;
         }
         CardModel.prototype.rate = function (direction) {
-            this.rating = direction;
+            this.userRating = direction;
             Swiper.Events.publish(Swiper.Events.TYPE.RATE);
         };
         return CardModel;
@@ -429,8 +430,8 @@ var Swiper;
             Swiper.Route.init('instructions');
         }
         Deck.prototype.endGame = function () {
-            --this.ratingCount;
-            if (this.ratingCount === 0)
+            --this.countdown;
+            if (this.countdown === 0)
                 Swiper.Route.goto('summary');
         };
         // remove a card if the first on pile is really front one
@@ -473,7 +474,7 @@ var Swiper;
         };
         ;
         Deck.prototype.activate = function () {
-            this.ratingCount = this.model.count;
+            this.countdown = this.model.count;
             //TODO improve (once its fetching the date once it just showing it)
             if (this.pile.length) {
                 this.switchCard();
@@ -582,7 +583,7 @@ var Swiper;
             var cards = Swiper.Route.get('deck').model.collection; // gets collection from last game
             this.resetList();
             cards.forEach(function (card) {
-                var list = (card.rating > 0) ? _this.likeList : _this.dislikeList;
+                var list = (card.userRating > 0) ? _this.likeList : _this.dislikeList;
                 list.push(card);
             });
         };
@@ -606,7 +607,6 @@ var Swiper;
         };
         Summary.prototype.subscribeEvents = function () {
             this.elemGoToDeck.click(this.goToDeck);
-            this.elemGoToHome.click(this.goToHome);
         };
         Summary.prototype.draw = function () {
             this.parent.empty();
@@ -619,7 +619,6 @@ var Swiper;
             this.draw();
             this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');
             ;
-            this.elemGoToHome = this.parent.find('.summary-controlsBtn.goToHome');
             this.subscribeEvents();
         };
         Summary.prototype.init = function () { };

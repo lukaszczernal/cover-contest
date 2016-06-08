@@ -347,6 +347,7 @@ body {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  overflow-y: auto;
 }
 .summary-title {
   text-transform: uppercase;
@@ -420,17 +421,32 @@ body {
   width: 100%;
   height: 0.5rem;
   margin-top: 1rem;
+  position: relative;
 }
-.summary-itemRatingProgressWrapper.m-liked {
+.summary-itemRatingProgressBg {
+  width: 100%;
+  background-color: #c8eeca;
+  height: 0.5rem;
+  position: absolute;
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+}
+.summary-itemRatingProgressWrapper.m-liked .summary-itemRatingProgressBg {
   background-color: #c8eeca;
 }
-.summary-itemRatingProgressWrapper.m-disliked {
-  background-color: #dc9090;
+.summary-itemRatingProgressWrapper.m-disliked .summary-itemRatingProgressBg {
+  background-color: #eec8c8;
 }
 .summary-itemRatingProgress {
-  width: 30%;
+  height: 0.5rem;
+  position: absolute;
+}
+.summary-itemRatingProgressWrapper.m-liked .summary-itemRatingProgress {
   background-color: #90dc95;
-  height: 100%;
+}
+.summary-itemRatingProgressWrapper.m-disliked .summary-itemRatingProgress {
+  background-color: #dc9090;
 }
 .summary-itemRatingText {
   margin: 0.4rem 0;
