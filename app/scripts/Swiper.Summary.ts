@@ -4,7 +4,6 @@ module Swiper {
 
   export class Summary extends Ctrl {
     elemGoToDeck: JQuery;
-    elemGoToHome: JQuery;
 
     goToDeck() {
       Route.goto('deck');
@@ -16,7 +15,6 @@ module Swiper {
 
     subscribeEvents() {
       this.elemGoToDeck.click(this.goToDeck);
-      this.elemGoToHome.click(this.goToHome);
     }
 
     draw() {
@@ -30,7 +28,6 @@ module Swiper {
         this.render();
         this.draw();
         this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');;
-        this.elemGoToHome = this.parent.find('.summary-controlsBtn.goToHome');
         this.subscribeEvents();
     }
 

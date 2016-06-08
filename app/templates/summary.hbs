@@ -11,9 +11,10 @@
                     <img class="summary-itemImg" src="{{src}}"/>
                     <div class="summary-itemRating">
                         <div class="summary-itemRatingProgressWrapper m-liked">
-                            <div class="summary-itemRatingProgress"></div>
+                            <div class="summary-itemRatingProgressBg"></div>
+                            <div class="summary-itemRatingProgress" style="width:{{rating}}%"></div>
                         </div>
-                        <span class="summary-itemRatingText">50% agree</span>
+                        <span class="summary-itemRatingText">{{rating}}% agree</span>
                     </div>
                 </li>
             {{/each}}
@@ -28,9 +29,10 @@
                     <img class="summary-itemImg" src="{{src}}"/>
                     <div class="summary-itemRating m-disliked">
                         <div class="summary-itemRatingProgressWrapper m-disliked">
-                            <div class="summary-itemRatingProgress"></div>
+                            <div class="summary-itemRatingProgressBg"></div>
+                            <div class="summary-itemRatingProgress" style="width:{{rating}}%"></div>
                         </div>
-                        <span class="summary-itemRatingText">50% agree</span>
+                        <span class="summary-itemRatingText">{{rating}}% agree</span>
                     </div>
                 </li>
             {{/each}}
@@ -38,8 +40,7 @@
     {{/if}}
 
     <div class="summary-controls">
-        <a class="summary-controlsBtn goToDeck btn">Again</a>
-        <a class="summary-controlsBtn goToHome btn">Home</a>
+        <a class="summary-controlsBtn goToDeck btn">One more round</a>
     </div>
 
 </div>

@@ -10,10 +10,11 @@ module Swiper {
         id:number = null;
         src:string = null;
         title:string = null;
-        rating:number = 0;
+        userRating:number = 0;
+        rating:number = Math.floor(Math.random() * 100) + 0; //TODO get real data  
 
         rate(direction:number) {
-          this.rating = direction;
+          this.userRating = direction;
           Events.publish(Events.TYPE.RATE);
         }
 

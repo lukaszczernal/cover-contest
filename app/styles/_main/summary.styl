@@ -4,6 +4,7 @@
     height 100%
     display flex
     flex-direction column
+    overflow-y auto
 
 .summary-title
     text-transform uppercase
@@ -40,17 +41,30 @@
     width 100%
     height 0.5rem
     margin-top 1rem
+    position relative
 
-    &.m-liked
+.summary-itemRatingProgressBg
+    width 100%
+    background-color: lighten(#90dc95, 50%)
+    height 0.5rem
+    position absolute
+    opacity 0.5
+
+    .summary-itemRatingProgressWrapper.m-liked &
         background-color: lighten(#90dc95, 50%)
 
-    &.m-disliked
-        background-color: #dc9090
+    .summary-itemRatingProgressWrapper.m-disliked &
+        background-color: lighten(#dc9090, 50%)       
 
 .summary-itemRatingProgress
-    width 30%
-    background-color: #90dc95
-    height 100%
+    height 0.5rem
+    position absolute
+
+    .summary-itemRatingProgressWrapper.m-liked &
+        background-color: #90dc95
+
+    .summary-itemRatingProgressWrapper.m-disliked &
+        background-color: #dc9090
 
 .summary-itemRatingText
     margin 0.4rem 0

@@ -11,11 +11,11 @@ module Swiper {
     export class Deck extends Ctrl {
         elemQueue:JQuery;
         pile:Array<Card> = [];
-        ratingCount:number;
+        countdown:number;
 
         endGame() {
-            --this.ratingCount;
-            if (this.ratingCount === 0)
+            --this.countdown;
+            if (this.countdown === 0)
                 Route.goto('summary');
         }
 
@@ -66,7 +66,7 @@ module Swiper {
         };
 
         activate() {
-            this.ratingCount = this.model.count;
+            this.countdown = this.model.count;
             //TODO improve (once its fetching the date once it just showing it)
             if (this.pile.length) {
                 this.switchCard();
