@@ -70,12 +70,13 @@ module Swiper {
                     this.rotate = 30 * direction;
                     this.translateX += (distance * velocity);
                     this.rate(direction);
+                    this.setOverlay(direction, 0.6);
                 } else {
                     this.rotate = 0;
+                    this.setOverlay(0, 0);
                 }
                 this.newTranslateX = this.translateX;
                 this.transform();
-                this.setOverlay(0, 0);
             });
         };
 
