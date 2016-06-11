@@ -272,13 +272,14 @@ var Swiper;
                     _this.rotate = 30 * direction;
                     _this.translateX += (distance * velocity);
                     _this.rate(direction);
+                    _this.setOverlay(direction, 0.6);
                 }
                 else {
                     _this.rotate = 0;
+                    _this.setOverlay(0, 0);
                 }
                 _this.newTranslateX = _this.translateX;
                 _this.transform();
-                _this.setOverlay(0, 0);
             });
         };
         ;
