@@ -24,14 +24,26 @@ module Swiper {
             this.elemImg.css('transform', transformations.join(' '));
         };
 
-        setOverlay(direction:number, percentage:number) {
-            var color: string;
+        setOverlay(direction:number) {
+            let color:string = '#fff';
+            let opacity:number = Math.abs(direction);
+            let content:string = '';
 
-            percentage = percentage * 0.6;
-            color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
+            switch (direction) {
+                case 1:
+                    color = '#90dc95';
+                    content = 'Yea!'
+                    break;
+                case -1:
+                    color = '#dc9090';
+                    content = 'Nah!'
+                    break;
+            }
 
-            this.elemOverlay.css('backgroundColor', color);
-            this.elemOverlay.css('opacity', percentage);
+            this.elemOverlay
+            .css('color', color)
+            .css('opacity', opacity)
+            .attr('data-content', content);
         }
 
         registerEvents() {
@@ -56,7 +68,7 @@ module Swiper {
                 this.rotate = (deltaAbsValue < deltaMax) ? direction * deltaPerc * degMax : direction * degMax;
 
                 this.transform();
-                this.setOverlay(direction, deltaPerc);
+                this.setOverlay(direction);
             });
 
             this.hammerElem.on("panend", (evt: HammerInput) => {
@@ -70,10 +82,10 @@ module Swiper {
                     this.rotate = 30 * direction;
                     this.translateX += (distance * velocity);
                     this.rate(direction);
-                    this.setOverlay(direction, 0.6);
+                    this.setOverlay(direction);
                 } else {
                     this.rotate = 0;
-                    this.setOverlay(0, 0);
+                    this.setOverlay(0);
                 }
                 this.newTranslateX = this.translateX;
                 this.transform();
