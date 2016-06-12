@@ -235,12 +235,24 @@ var Swiper;
             this.elemImg.css('transform', transformations.join(' '));
         };
         ;
-        Card.prototype.setOverlay = function (direction, percentage) {
-            var color;
-            percentage = percentage * 0.6;
-            color = (direction < 0) ? '#ea0c0c' : '#84ea0c';
-            this.elemOverlay.css('backgroundColor', color);
-            this.elemOverlay.css('opacity', percentage);
+        Card.prototype.setOverlay = function (direction) {
+            var color = '#fff';
+            var opacity = Math.abs(direction);
+            var content = '';
+            switch (direction) {
+                case 1:
+                    color = '#90dc95';
+                    content = 'Yea!';
+                    break;
+                case -1:
+                    color = '#dc9090';
+                    content = 'Nah!';
+                    break;
+            }
+            this.elemOverlay
+                .css('color', color)
+                .css('opacity', opacity)
+                .attr('data-content', content);
         };
         Card.prototype.registerEvents = function () {
             var _this = this;
@@ -260,7 +272,7 @@ var Swiper;
                 _this.newTranslateX = _this.translateX + evt.deltaX;
                 _this.rotate = (deltaAbsValue < deltaMax) ? direction * deltaPerc * degMax : direction * degMax;
                 _this.transform();
-                _this.setOverlay(direction, deltaPerc);
+                _this.setOverlay(direction);
             });
             this.hammerElem.on("panend", function (evt) {
                 _this.elemImg.addClass('tween');
@@ -272,11 +284,11 @@ var Swiper;
                     _this.rotate = 30 * direction;
                     _this.translateX += (distance * velocity);
                     _this.rate(direction);
-                    _this.setOverlay(direction, 0.6);
+                    _this.setOverlay(direction);
                 }
                 else {
                     _this.rotate = 0;
-                    _this.setOverlay(0, 0);
+                    _this.setOverlay(0);
                 }
                 _this.newTranslateX = _this.translateX;
                 _this.transform();
