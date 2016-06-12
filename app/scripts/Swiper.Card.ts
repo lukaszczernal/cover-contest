@@ -123,6 +123,7 @@ module Swiper {
         }
 
         setPosition(index:number = Config.pileSize) {
+            // TODO speed of animation should depend of the distance
             index = (index < Config.pileSize) ? index : Config.pileSize;
             this.position = index;
             this.setClass(index);
@@ -133,7 +134,7 @@ module Swiper {
         }
 
         moveTo(index:number) {
-            setTimeout( () => {
+            setTimeout( () => {  // without timeout animation is not visible when entering stage
                 this.setPosition(index) }
             , 0);
         }
