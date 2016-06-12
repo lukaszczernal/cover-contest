@@ -324,6 +324,7 @@ var Swiper;
         };
         Card.prototype.setPosition = function (index) {
             if (index === void 0) { index = Swiper.Config.pileSize; }
+            // TODO speed of animation should depend of the distance
             index = (index < Swiper.Config.pileSize) ? index : Swiper.Config.pileSize;
             this.position = index;
             this.setClass(index);
