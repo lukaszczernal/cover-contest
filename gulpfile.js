@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    es = require('event-stream'),
     plugins = require('gulp-load-plugins')(),
     browserSync = require('browser-sync').create(),
     nib = require('nib');
@@ -22,21 +23,10 @@ var source = {
     'public/templates/**/*/js'
  ];
 
- var bower_components = [
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/hammerjs/hammer.js',
-    // 'bower_components/react/react.js',
-    // 'bower_components/react/JSXTransformer.js',
-    'bower_components/handlebars/handlebars.runtime.js',
-    'bower_components/inobounce/inobounce.js',
-    'bower_components/lodash/lodash.js',
-    'bower_components/fastclick/lib/fastclick.js'
- ];
-
 gulp.task('browserSync', function () {
    browserSync.init(dest, {
       server: {
-         baseDir: './public'
+         baseDir: ["./", "./public"]
       }
    });
 });
@@ -61,9 +51,18 @@ gulp.task('indexTemplate', function() {
 });
 
 gulp.task('bower', function() {
-  gulp.src(bower_components)
-    .pipe(plugins.concat('bower.js'))
-    .pipe(gulp.dest('public/scripts/'))
+    gulp.src(source.indexTemplate)
+        .pipe(plugins.htmlbuild({
+            bowerJS: plugins.htmlbuild.preprocess.js(function (block) {
+                    block.pipe(gulpSrc())
+                        .pipe(buildJS('bower.js', 'public/scripts/'));
+                    block.write('scripts/bower.js');
+                    block.end();
+                })
+        }))
+        .pipe(plugins.compileHandlebars())
+        .pipe(plugins.rename('index.html'))
+        .pipe(gulp.dest('public'));
 });
 
 gulp.task('scripts', function() {
@@ -111,5 +110,25 @@ gulp.task('watch', function() {
   gulp.watch(source.indexTemplate, ['indexTemplate']);
 });
 
-gulp.task('build', ['indexTemplate', 'templates', 'bower', 'scripts', 'styles', 'assets'], browserSync.reload);
-gulp.task('serve', ['browserSync','build','watch']);
+gulp.task('develop', ['indexTemplate', 'templates', 'scripts', 'styles', 'assets'], browserSync.reload);
+gulp.task('build', ['develop', 'bower']);
+gulp.task('serve', ['browserSync','develop','watch']);
+
+// function copied from https://www.npmjs.com/package/gulp-htmlbuild
+function gulpSrc(opts) {
+    var paths = es.through();
+    var files = es.through();
+
+    paths.pipe(es.writeArray(function (err, srcs) {
+        gulp.src(srcs, opts).pipe(files);
+    }));
+
+    return es.duplex(paths, files);
+};
+
+function buildJS(file, dest) {
+    return es.pipeline(
+        plugins.concat(file),
+        gulp.dest(dest)
+    );
+}
