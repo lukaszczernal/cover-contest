@@ -92,20 +92,20 @@ module Swiper {
             });
         };
 
-        private onRateEnd() {
+        private onRateEnd(direction: number) {
             this.elemTitle.addClass('m-rated');
             this.elemImg
               .addClass('m-rated')
               .one('transitionend', () => {
                   this.elem.remove();
-                  Events.publish(Events.TYPE.RATE_END);
+                  Events.publish(Events.TYPE.RATE_END, direction);
               });
         }
 
-        private rate(direction:number) {
+        private rate(direction: number) {
             this.unRegisterEvents();
             this.model.rate(direction);
-            this.onRateEnd();
+            this.onRateEnd(direction);
         }
 
         unRegisterEvents() {

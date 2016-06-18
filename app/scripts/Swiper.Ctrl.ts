@@ -8,21 +8,32 @@ module Swiper {
 
         elem: JQuery;
 
-        render() {
+        render(): Ctrl {
             var data = this.model;
             this.elem = this.view.render(data);
+            return this;
         }
 
-        draw() {
+        draw(): Ctrl {
             this.parent.prepend(this.elem)
+            return this;
         }
 
-        init() {
-
+        show(): Ctrl {
+            this.parent.show();
+            return this;
         }
 
-        activate() {
+        init(): Ctrl {
+            return this;
+        }
 
+        activate(): Ctrl {
+            return this;
+        }
+
+        animate(type: string): Ctrl {
+            return this;
         }
 
         constructor(public parent: JQuery, public model: any, public view: Swiper.View) {

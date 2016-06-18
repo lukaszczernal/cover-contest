@@ -7,14 +7,19 @@ module Swiper {
 
     static states: any = {};
 
-    static goto(name: string) {
-      let target = Route.get(name);
-      target.activate();
-      this.statesElem.hide();
-      target.parent.show();
+    static hideAllStates() {
+        this.statesElem.hide();
     }
 
-    static get(name:string): Ctrl {
+    static goto(name: string, animationType: string = ''): Ctrl {
+        this.hideAllStates();
+        return Route.get(name)
+            .activate()
+            .show()
+            .animate(animationType);
+    }
+
+    static get(name: string): Ctrl {
       let target = this.states[name];
 
       if (!target) {

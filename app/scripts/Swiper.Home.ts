@@ -29,9 +29,10 @@ module Swiper {
       this.startButton.text('Start');
     }
 
-    init() {
+    init(): Ctrl {
         this.startButton = this.elem.find('.home-start .btn');
         this.loadFirstDeal();
+        return this;
     }
 
     constructor(parent: JQuery, model: HomeModel, view: View) {

@@ -21,8 +21,9 @@ module Swiper {
       Events.subscribe('onRATEstart', () => this.hide());
     }
 
-    init() {
+    init(): Ctrl {
       this.subscribeEvents();
+      return this;
     }
 
     constructor(parent: JQuery, model: Model, view: View) {

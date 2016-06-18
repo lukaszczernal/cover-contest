@@ -9,29 +9,28 @@ module Swiper {
       Route.goto('deck');
     }
 
-    goToHome() {
-      Route.goto('home');
-    }
-
     subscribeEvents() {
       this.elemGoToDeck.click(this.goToDeck);
     }
 
-    draw() {
+    draw(): Ctrl {
         this.parent.empty();
-        super.draw();
+        return super.draw();
     }
 
+    animate(type: string): Ctrl {
+        this.elem.animateCss(type); //TODO add typing
+        return this;
+    }
     //TODO find out a way not to re-attache events
-    activate() {
+    activate(): Ctrl {
         this.model.update();
         this.render();
         this.draw();
-        this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');;
+        this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');
         this.subscribeEvents();
+        return this;
     }
-
-    init() {};
 
   }
 

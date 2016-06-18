@@ -55,8 +55,14 @@ gulp.task('bower', function() {
         .pipe(plugins.htmlbuild({
             bowerJS: plugins.htmlbuild.preprocess.js(function (block) {
                     block.pipe(gulpSrc())
-                        .pipe(buildJS('bower.js', 'public/scripts/'));
+                        .pipe(build('bower.js', 'public/scripts/'));
                     block.write('scripts/bower.js');
+                    block.end();
+                }),
+            bowerCSS: plugins.htmlbuild.preprocess.js(function (block) {
+                    block.pipe(gulpSrc())
+                        .pipe(build('bower.css', 'public/styles/'));
+                    block.write('scripts/bower.css');
                     block.end();
                 })
         }))
@@ -126,7 +132,8 @@ function gulpSrc(opts) {
     return es.duplex(paths, files);
 };
 
-function buildJS(file, dest) {
+//TODO add minification
+function build(file, dest) {
     return es.pipeline(
         plugins.concat(file),
         gulp.dest(dest)

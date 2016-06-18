@@ -13,10 +13,12 @@ module Swiper {
         pile:Array<Card> = [];
         countdown:number;
 
-        endGame() {
+        endGame(direction: number) {
             --this.countdown;
-            if (this.countdown === 0)
-                Route.goto('summary');
+            if (this.countdown === 0) {
+                let animationType = (direction > 0) ? 'fadeInLeft' : 'fadeInRight';
+                Route.goto('summary', animationType);
+            }
         }
 
         // remove a card if the first on pile is really front one
@@ -60,20 +62,22 @@ module Swiper {
             Events.subscribe(Events.TYPE.RATE_END, this.endGame.bind(this));
         }
 
-        init() {
+        init(): Ctrl {
             this.elemQueue = this.elem.find('.swiper-queue');
             this.subscribeEvents();
+            return this;
         };
 
-        activate() {
+        activate(): Ctrl {
             this.countdown = this.model.count;
-            //TODO improve (once its fetching the date once it just showing it)
+            //TODO improve (once its fetching the data once it just showing it - multiple responsabilities)
             if (this.pile.length) {
                 this.switchCard();
             } else {
                 this.model.get()
                 .then( this.switchCard.bind(this) );
             }
+            return this;
         }
 
         constructor(parent: JQuery, model: DeckModel, view: View) {
