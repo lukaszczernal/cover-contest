@@ -328,6 +328,7 @@ var Swiper;
         Card.prototype.draw = function () {
             _super.prototype.draw.call(this);
             this.hammerElem = new Hammer(this.elemImg[0]);
+            return this;
         };
         ;
         Card.prototype.isFirst = function () {
@@ -359,6 +360,7 @@ var Swiper;
             this.elemImg = this.elem.find('.card-img');
             this.elemTitle = this.elem.find('.card-title');
             this.elemOverlay = this.elem.find('.card-imgOverlay');
+            return this;
         };
         ;
         ;
