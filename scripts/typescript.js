@@ -182,13 +182,24 @@ var Swiper;
         Ctrl.prototype.render = function () {
             var data = this.model;
             this.elem = this.view.render(data);
+            return this;
         };
         Ctrl.prototype.draw = function () {
             this.parent.prepend(this.elem);
+            return this;
+        };
+        Ctrl.prototype.show = function () {
+            this.parent.show();
+            return this;
         };
         Ctrl.prototype.init = function () {
+            return this;
         };
         Ctrl.prototype.activate = function () {
+            return this;
+        };
+        Ctrl.prototype.animate = function (type) {
+            return this;
         };
         return Ctrl;
     }());
@@ -295,20 +306,20 @@ var Swiper;
             });
         };
         ;
-        Card.prototype.onRateEnd = function () {
+        Card.prototype.onRateEnd = function (direction) {
             var _this = this;
             this.elemTitle.addClass('m-rated');
             this.elemImg
                 .addClass('m-rated')
                 .one('transitionend', function () {
                 _this.elem.remove();
-                Swiper.Events.publish(Swiper.Events.TYPE.RATE_END);
+                Swiper.Events.publish(Swiper.Events.TYPE.RATE_END, direction);
             });
         };
         Card.prototype.rate = function (direction) {
             this.unRegisterEvents();
             this.model.rate(direction);
-            this.onRateEnd();
+            this.onRateEnd(direction);
         };
         Card.prototype.unRegisterEvents = function () {
             this.hammerElem.destroy();
@@ -365,10 +376,21 @@ var Swiper;
         }
         Config.run = function () {
             this.setFastClick();
+            this.animateCss();
         };
         Config.setFastClick = function () {
             $(function () {
                 FastClick.attach(document.body);
+            });
+        };
+        Config.animateCss = function () {
+            $.fn.extend({
+                animateCss: function (animationName) {
+                    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+                    $(this).addClass('animated ' + animationName).one(animationEnd, function () {
+                        $(this).removeClass('animated ' + animationName);
+                    });
+                }
             });
         };
         Config.pileSize = 3;
@@ -393,11 +415,16 @@ var Swiper;
     var Route = (function () {
         function Route() {
         }
-        Route.goto = function (name) {
-            var target = Route.get(name);
-            target.activate();
+        Route.hideAllStates = function () {
             this.statesElem.hide();
-            target.parent.show();
+        };
+        Route.goto = function (name, animationType) {
+            if (animationType === void 0) { animationType = ''; }
+            this.hideAllStates();
+            return Route.get(name)
+                .activate()
+                .show()
+                .animate(animationType);
         };
         Route.get = function (name) {
             var target = this.states[name];
@@ -443,10 +470,12 @@ var Swiper;
             this.draw();
             Swiper.Route.init('instructions');
         }
-        Deck.prototype.endGame = function () {
+        Deck.prototype.endGame = function (direction) {
             --this.countdown;
-            if (this.countdown === 0)
-                Swiper.Route.goto('summary');
+            if (this.countdown === 0) {
+                var animationType = (direction > 0) ? 'fadeInLeft' : 'fadeInRight';
+                Swiper.Route.goto('summary', animationType);
+            }
         };
         // remove a card if the first on pile is really front one
         // initially all cards have position that is invisible on a rendered pile
@@ -485,11 +514,12 @@ var Swiper;
         Deck.prototype.init = function () {
             this.elemQueue = this.elem.find('.swiper-queue');
             this.subscribeEvents();
+            return this;
         };
         ;
         Deck.prototype.activate = function () {
             this.countdown = this.model.count;
-            //TODO improve (once its fetching the date once it just showing it)
+            //TODO improve (once its fetching the data once it just showing it - multiple responsabilities)
             if (this.pile.length) {
                 this.switchCard();
             }
@@ -497,6 +527,7 @@ var Swiper;
                 this.model.get()
                     .then(this.switchCard.bind(this));
             }
+            return this;
         };
         return Deck;
     }(Swiper.Ctrl));
@@ -543,6 +574,7 @@ var Swiper;
         Home.prototype.init = function () {
             this.startButton = this.elem.find('.home-start .btn');
             this.loadFirstDeal();
+            return this;
         };
         return Home;
     }(Swiper.Ctrl));
@@ -574,6 +606,7 @@ var Swiper;
         };
         Instructions.prototype.init = function () {
             this.subscribeEvents();
+            return this;
         };
         return Instructions;
     }(Swiper.Ctrl));
@@ -616,15 +649,16 @@ var Swiper;
         Summary.prototype.goToDeck = function () {
             Swiper.Route.goto('deck');
         };
-        Summary.prototype.goToHome = function () {
-            Swiper.Route.goto('home');
-        };
         Summary.prototype.subscribeEvents = function () {
             this.elemGoToDeck.click(this.goToDeck);
         };
         Summary.prototype.draw = function () {
             this.parent.empty();
-            _super.prototype.draw.call(this);
+            return _super.prototype.draw.call(this);
+        };
+        Summary.prototype.animate = function (type) {
+            this.elem.animateCss(type); //TODO add typing
+            return this;
         };
         //TODO find out a way not to re-attache events
         Summary.prototype.activate = function () {
@@ -632,11 +666,9 @@ var Swiper;
             this.render();
             this.draw();
             this.elemGoToDeck = this.parent.find('.summary-controlsBtn.goToDeck');
-            ;
             this.subscribeEvents();
+            return this;
         };
-        Summary.prototype.init = function () { };
-        ;
         return Summary;
     }(Swiper.Ctrl));
     Swiper.Summary = Summary;
