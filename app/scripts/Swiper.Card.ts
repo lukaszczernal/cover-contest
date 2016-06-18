@@ -113,9 +113,10 @@ module Swiper {
             // this.elemImg.unbind('transitionend'); @TODO to be considered
         }
 
-        draw() {
+        draw(): Ctrl {
             super.draw();
             this.hammerElem = new Hammer(this.elemImg[0]);
+            return this;
         };
 
         isFirst(): boolean {
@@ -147,10 +148,11 @@ module Swiper {
             return 'm-front-' + index;
         }
 
-        init() {
+        init(): Ctrl {
             this.elemImg     = this.elem.find('.card-img');
             this.elemTitle   = this.elem.find('.card-title');
             this.elemOverlay = this.elem.find('.card-imgOverlay');
+            return this;
         };
 
         constructor(parent:JQuery, model: CardModel, view:View) {

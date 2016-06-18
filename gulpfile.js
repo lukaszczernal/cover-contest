@@ -59,7 +59,7 @@ gulp.task('bower', function() {
                     block.write('scripts/bower.js');
                     block.end();
                 }),
-            bowerCSS: plugins.htmlbuild.preprocess.js(function (block) {
+            bowerCSS: plugins.htmlbuild.preprocess.css(function (block) {
                     block.pipe(gulpSrc())
                         .pipe(build('bower.css', 'public/styles/'));
                     block.write('scripts/bower.css');
@@ -117,8 +117,8 @@ gulp.task('watch', function() {
 });
 
 gulp.task('develop', ['indexTemplate', 'templates', 'scripts', 'styles', 'assets'], browserSync.reload);
-gulp.task('build', ['develop', 'bower']);
-gulp.task('serve', ['browserSync','develop','watch']);
+gulp.task('build', ['templates', 'scripts', 'styles', 'assets', 'bower']);
+gulp.task('serve', ['browserSync', 'develop', 'watch']);
 
 // function copied from https://www.npmjs.com/package/gulp-htmlbuild
 function gulpSrc(opts) {
