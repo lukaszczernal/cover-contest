@@ -62,7 +62,7 @@ gulp.task('bower', function() {
             bowerCSS: plugins.htmlbuild.preprocess.css(function (block) {
                     block.pipe(gulpSrc())
                         .pipe(build('bower.css', 'public/styles/'));
-                    block.write('scripts/bower.css');
+                    block.write('styles/bower.css');
                     block.end();
                 })
         }))
